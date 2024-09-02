@@ -1,6 +1,5 @@
-import Collection from "./components/collection";
 
-const App = () => {
+function App() {
   return (
     <div>
       <Collection />
