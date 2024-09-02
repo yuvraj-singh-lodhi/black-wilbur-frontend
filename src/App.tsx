@@ -1,8 +1,11 @@
+import Collection from "./components/collection";
 
-function App() {
+const App = () => {
   return (
-    <div>App</div>
-  )
-}
+    <div>
+      <Collection />
+    </div>
+  );
+};
 
-export default App
+export default App;

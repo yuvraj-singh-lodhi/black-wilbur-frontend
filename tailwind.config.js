@@ -3,6 +3,16 @@ export default {
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
     extend: {},
+    fontFamily: {
+      monsterrat: ['"Montserrat"'],
+    },
+    scrollbar: {
+      thin: {
+        width: "8px",
+        track: "#1b1b1b",
+        thumb: "#6c6c6c",
+      },
+    },
   },
-  plugins: [],
+  plugins: [require("tailwind-scrollbar")],
 };

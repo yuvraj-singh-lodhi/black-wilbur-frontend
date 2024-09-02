@@ -1,0 +1,20 @@
+/* custom-scrollbar.css */
+
+.scrollbar-thin::-webkit-scrollbar {
+  width: 8px; /* Width of the scrollbar */
+}
+
+.scrollbar-thin::-webkit-scrollbar-track {
+  background: #1b1b1b; /* Background color of the track */
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  background-color: #6c6c6c; /* Scrollbar color */
+  border-radius: 10px; /* Rounded corners for the scrollbar */
+  border: 2px solid #1b1b1b; /* Optional: Border around the scrollbar thumb */
+}
+
+.scrollbar-thin {
+  scrollbar-width: thin; /* Makes the scrollbar thin */
+  scrollbar-color: #6c6c6c #1b1b1b; /* Scrollbar color and track color */
+}
