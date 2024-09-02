@@ -1,8 +1,12 @@
-
+import Home from "./components/home"; // Capitalize the component name
+import Navbar from "./components/navbar";
 function App() {
   return (
-    <div>App</div>
-  )
+    <>
+      <Navbar />
+      <Home />
+    </>
+  );
 }
 
-export default App
+export default App;
