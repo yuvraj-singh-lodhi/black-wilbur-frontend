@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import img from "../assets/collection-carousel.jpg";
 import tshirt from "../assets/blackT.png";
 import { MdFilterList } from "react-icons/md";
@@ -7,7 +7,7 @@ import { AiOutlinePlus } from "react-icons/ai";
 import Footer from "../components/footer";
 import "../index.css";
 
-const Collection = () => {
+const Collection: React.FC = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const toggleSidebar = () => setSidebarOpen((prev) => !prev);
