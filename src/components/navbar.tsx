@@ -34,7 +34,7 @@ const Navbar: React.FC = () => {
         }`}
       >
         {/* For Large Screens */}
-        <div className="hidden md:flex items-center justify-between w-full">
+        <div className="hidden md:flex items-center justify-between w-full pl-16 pr-10">
           <MdMenu className="text-2xl cursor-pointer" onClick={toggleSidebar} />
           <img src={logo} alt="BlackWilbur" className="h-8 mx-auto" />
           <div className="flex items-center space-x-4">
@@ -44,13 +44,13 @@ const Navbar: React.FC = () => {
         </div>
 
         {/* For Medium and Small Screens */}
-        <div className="flex md:hidden items-center justify-between w-full">
+        <div className="flex md:hidden items-center justify-between w-full pl-16 pr-14">
           <img src={logo} alt="BlackWilbur" className="h-8" />
           <div className="flex items-center space-x-4">
             <FaCircleUser className="text-xl" />
             <FaSearch className="text-xl" />
             <MdMenu
-              className="text-2xl cursor-pointer"
+              className="text-2xl cursor-pointer pr-2"
               onClick={toggleSidebar}
             />
           </div>

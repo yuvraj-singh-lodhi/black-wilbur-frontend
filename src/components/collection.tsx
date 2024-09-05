@@ -20,6 +20,10 @@ const Collection: React.FC = () => {
             className="w-full h-full object-cover"
             src={img}
             alt="carousel"
+            style={{
+              objectPosition: "center bottom",
+              // transform: "translateY(1%)",
+            }}
           />
         </div>
         <div className="content-container w-full bg-[#141414] p-6 sm:p-8 md:p-10 lg:p-12">
@@ -59,13 +63,19 @@ const Collection: React.FC = () => {
               {Array.from({ length: 12 }).map((_, index) => (
                 <div
                   key={index}
-                  className="card bg-[#BCBCBC] rounded-sm overflow-hidden flex items-center justify-center"
+                  className="relative bg-[#BCBCBC] rounded-sm overflow-hidden flex items-center justify-center"
                 >
                   <img
                     className="w-full h-auto object-cover"
                     src={tshirt}
                     alt={`tshirt-${index}`}
                   />
+                  <div className="absolute bottom-2 left-2 text-[#282828] text-sm font-semibold">
+                    T-SHIRT
+                  </div>
+                  <div className="absolute bottom-2 right-2 text-[#636363] text-sm font-semibold">
+                    300rs
+                  </div>
                 </div>
               ))}
             </div>
@@ -123,7 +133,6 @@ const Collection: React.FC = () => {
           </div>
         </div>
       </div>
-      <Footer />
     </>
   );
 };
