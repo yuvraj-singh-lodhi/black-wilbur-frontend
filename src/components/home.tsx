@@ -6,17 +6,6 @@ import blackBackground from "../assets/blackBackground.png";
 
 const Home: React.FC = () => {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
-
-  const handleScroll = (e: React.WheelEvent<HTMLDivElement>) => {
-    if (e.deltaY !== 0 && scrollContainerRef.current) {
-      e.preventDefault();
-      scrollContainerRef.current.scrollBy({
-        left: e.deltaY,
-        behavior: "smooth",
-      });
-    }
-  };
-
   useEffect(() => {
     const handleVerticalScroll = (e: Event) => {
       if (scrollContainerRef.current) {
@@ -80,11 +69,14 @@ const Home: React.FC = () => {
 
       {/* Our Best Seller Section */}
       <section className="py-16 bg-[#1B1B1B] relative overflow-x-hidden">
-        <div className="container mx-auto px-4">
-          <h2 className="-ml-6 text-4xl lg:text-5xl font-normal font-montserrat uppercase leading-tight text-white mb-8">
+        <div className="container mx-auto ">
+         <div className="px-3">
+         <h2 className="ml-16 text-4xl lg:text-5xl font-normal font-montserrat uppercase leading-tight text-white mb-8">
             Our Bestsellers
           </h2>
-          <div
+         </div>
+         <div className="px-4">
+         <div
             className="scroll-smooth"
             style={{
               overflowX: "auto", // Enable horizontal scrolling
@@ -100,7 +92,7 @@ const Home: React.FC = () => {
                 height: "75vh",
               }}
             >
-              {Array(5)
+              {Array(7)
                 .fill(null)
                 .map((_, index) => (
                   <div
@@ -128,23 +120,22 @@ const Home: React.FC = () => {
                 ))}
             </div>
           </div>
+         </div>
+         
         </div>
         <div className="absolute w-full bottom-0 left-1/2 transform -translate-x-1/2 border-t border-black"></div>
       </section>
 
       {/* Video Section */}
-      <section className="py-16 bg-black overflow-hidden">
-        <div className="container mx-auto px-4 text-center">
-          {/* <h2 className="text-4xl lg:text-5xl font-normal font-montserrat uppercase leading-tight text-white mb-8">
-            Watch Our Latest Video
-          </h2> */}
+      <section className="py-16 bg-[#1B1B1B] overflow-hidden">
+        <div className="container mx-auto px-16 text-center">
           <div className="relative">
             <video
               src={videoSrc}
               autoPlay
               loop
               muted
-              className="rounded-lg w-full max-w-full"
+              className="w-full max-w-full"
               style={{ height: "auto" }}
             >
               Your browser does not support the video tag.
@@ -155,11 +146,14 @@ const Home: React.FC = () => {
 
       {/* Explore Our Collections Section */}
       <section className="py-16 bg-[#1b1b1b] text-white overflow-hidden">
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto ">
+          <div className="px-16">
           <h2 className="text-4xl lg:text-5xl font-normal font-montserrat uppercase leading-tight text-gray-100 mb-8 text-start">
             Explore Our Collections
           </h2>
-          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-[1px]">
+          </div>    
+          <div className="px-1">
+          <div className="px-1 grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-[1px]">
             {Array.from({ length: 6 }).map((_, index) => (
               <div
                 key={index}
@@ -180,6 +174,8 @@ const Home: React.FC = () => {
               </div>
             ))}
           </div>
+            </div>      
+     
           <div className="mt-12 flex justify-center">
             <button className="px-6 py-3 bg-black text-white rounded-full hover:bg-gray-800 transition">
               Shop Collections
@@ -189,7 +185,7 @@ const Home: React.FC = () => {
       </section>
 
       {/* Why Black Section */}
-      <section className="relative mb-3 py-16 bg-black mb-28">
+      <section className="relative py-16 bg-black mb-28">
         <div
           className="absolute inset-0"
           style={{

@@ -44,8 +44,8 @@ const Navbar: React.FC = () => {
         </div>
 
         {/* For Medium and Small Screens */}
-        <div className="flex md:hidden items-center justify-between w-full pl-16 pr-14">
-          <img src={logo} alt="BlackWilbur" className="h-8" />
+        <div className="flex md:hidden items-center justify-between w-full  ">
+          <img src={logo} alt="BlackWilbur" className="h-6" />
           <div className="flex items-center space-x-4">
             <FaCircleUser className="text-xl" />
             <FaSearch className="text-xl" />

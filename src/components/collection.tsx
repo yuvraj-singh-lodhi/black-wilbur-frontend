@@ -4,7 +4,6 @@ import tshirt from "../assets/blackT.png";
 import { MdFilterList } from "react-icons/md";
 import { MdClose } from "react-icons/md";
 import { AiOutlinePlus } from "react-icons/ai";
-import Footer from "../components/footer";
 import "../index.css";
 
 const Collection: React.FC = () => {
@@ -22,7 +21,6 @@ const Collection: React.FC = () => {
             alt="carousel"
             style={{
               objectPosition: "center bottom",
-              // transform: "translateY(1%)",
             }}
           />
         </div>
@@ -58,8 +56,8 @@ const Collection: React.FC = () => {
               />
             </div>
           </div>
-          <div className="product-container text-center mt-6">
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-1">
+          <div className="product-container w-full mt-6"> {/* Ensure full width here */}
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-1 w-full">
               {Array.from({ length: 12 }).map((_, index) => (
                 <div
                   key={index}
