@@ -3,24 +3,18 @@ import { IoIosStar } from "react-icons/io";
 import tshirt from "../assets/blackT.png";
 
 const Product: React.FC = () => {
-  // Array of product images
-  const images = [tshirt, tshirt, tshirt]; // Add your actual images here
+  const images = [tshirt, tshirt, tshirt];
 
   return (
     <div className="bg-[#1B1B1B] text-white">
-      {/* Top Background Area */}
       <div className="bg-[#D9D9D9] h-[80px]" />
 
-      {/* Main Product Page Container */}
       <div className="relative">
-        {/* First Section */}
         <section
           className="flex flex-col lg:flex-row gap-4"
           style={{ height: "calc(3 * 700px + 50px)" }}
         >
-          {/* First Column: Product Images */}
           <div className="w-full lg:w-1/2 flex flex-col items-center gap-0 -ml-2">
-            {/* Image Containers */}
             <div
               className="relative flex items-center justify-center"
               style={{
@@ -68,12 +62,10 @@ const Product: React.FC = () => {
             </div>
           </div>
 
-          {/* Second Column: Product Details */}
           <div className="w-full lg:w-1/2 p-6 flex flex-col">
             <h1 className="text-4xl font-bold mb-2">PRODUCT NAME</h1>
             <p className="text-xl mb-4">PRICE</p>
 
-            {/* Star Rating */}
             <div className="flex items-center mb-4">
               {[1, 2, 3].map((_, index) => (
                 <IoIosStar
@@ -119,7 +111,6 @@ const Product: React.FC = () => {
           </div>
         </section>
 
-        {/* Second Section */}
         <section className="mt-[80px]">
           <div className="text-left mb-8">
             <h2 className="text-4xl font-normal ml-4">VISIT MORE</h2>
