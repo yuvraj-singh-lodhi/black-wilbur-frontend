@@ -4,7 +4,6 @@ import tshirt from "../assets/blackT.png";
 import { MdFilterList } from "react-icons/md";
 import { MdClose } from "react-icons/md";
 import { AiOutlinePlus } from "react-icons/ai";
-import "../index.css";
 
 const Collection: React.FC = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -19,12 +18,10 @@ const Collection: React.FC = () => {
             className="w-full h-full object-cover"
             src={img}
             alt="carousel"
-            style={{
-              objectPosition: "center bottom",
-            }}
+            style={{ objectPosition: "center bottom" }}
           />
         </div>
-        <div className="content-container w-full bg-[#141414] p-6 sm:p-8 md:p-10 lg:p-12">
+        <div className="content-container w-full bg-[#141414] p-0">
           <div className="header-container w-full flex justify-between items-center p-6 border-b border-[#6C6C6C]">
             <div
               className="collections text-[#FFFFFF] font-bold"
@@ -56,15 +53,16 @@ const Collection: React.FC = () => {
               />
             </div>
           </div>
-          <div className="product-container w-full mt-6"> {/* Ensure full width here */}
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-1 w-full">
+          <div className="product-container w-full mt-6 px-0">
+            {/* Grid layout with 3 images per row and 3px gap */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-1 w-full">
               {Array.from({ length: 12 }).map((_, index) => (
                 <div
                   key={index}
                   className="relative bg-[#BCBCBC] rounded-sm overflow-hidden flex items-center justify-center"
                 >
                   <img
-                    className="w-full h-auto object-cover"
+                    className="w-full h-full object-cover"
                     src={tshirt}
                     alt={`tshirt-${index}`}
                   />
