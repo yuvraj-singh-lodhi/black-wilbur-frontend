@@ -40,17 +40,17 @@ const Navbar: React.FC = () => {
           hideNavbar ? "hidden" : "static"
         }`}
       >
-        <div className="hidden md:flex h-30 flex-col w-full">
+        <div className="hidden md:flex h-24 flex-col w-full">
           {/* For Large Screens */}
           <div className="hidden h-20 md:flex items-center justify-between w-full pl-16 pr-16 border-b-2 border-black ">
             <MdMenu
-              className="text-2xl cursor-pointer"
+              className="text-4xl cursor-pointer"
               onClick={toggleSidebar}
             />
             <img onClick={() => handleNavigate("/")} src={logo} alt="BlackWilbur" className="h-8 mx-auto" />
             <div className="flex items-center space-x-4">
-              <FaSearch className="text-xl" />
-              <FaCircleUser onClick={() => handleNavigate("/Login")} className="text-xl" />
+              <FaSearch className="text-2xl" />
+              <FaCircleUser onClick={() => handleNavigate("/Login")} className="text-2xl" />
             </div>
           </div>
           {/* Mini Navbar */}
