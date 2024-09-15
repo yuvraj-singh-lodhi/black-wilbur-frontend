@@ -6,65 +6,52 @@ const Product: React.FC = () => {
   const images = [tshirt, tshirt, tshirt];
 
   return (
-    <div className="bg-[#1B1B1B] text-white">
+    <div className="bg-[#1B1B1B] text-white  min-h-screen">
+      {/* Header Section */}
       <div className="bg-[#D9D9D9] h-[80px]" />
 
-      <div className="relative">
-        <section
-          className="flex flex-col lg:flex-row gap-4"
-          style={{ height: "calc(3 * 700px + 50px)" }}
-        >
-          <div className="w-full lg:w-1/2 flex flex-col items-center gap-0 -ml-2">
+      {/* Main Content Section */}
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+        <section className="flex flex-col lg:flex-row gap-10 justify-center items-start">
+          {/* Scrollable Image Section */}
+          <div className="w-full lg:w-1/2 flex flex-col lg:flex-row items-center gap-0">
+            {/* Small screens: Horizontal scroll, Large screens: Vertical scroll */}
             <div
-              className="relative flex items-center justify-center"
+              className="relative flex lg:flex-col items-center gap-2 overflow-x-auto lg:overflow-y-auto lg:overflow-x-hidden hover:overflow-scroll scrollbar-none"
               style={{
-                width: "700px",
-                height: "700px",
-                backgroundColor: "#D9D9D9",
+                width: "100%",
+                maxWidth: "800px",
+                height: "100%",
+                maxHeight: "750px",
               }}
             >
-              <img
-                className="w-full h-full object-cover"
-                src={tshirt}
-                alt="Product Image 1"
-                style={{ backgroundColor: "#D9D9D9" }}
-              />
-            </div>
-            <div
-              className="relative flex items-center justify-center"
-              style={{
-                width: "700px",
-                height: "700px",
-                backgroundColor: "#F0F0F0",
-              }}
-            >
-              <img
-                className="w-full h-full object-cover"
-                src={tshirt}
-                alt="Product Image 2"
-                style={{ backgroundColor: "#F0F0F0" }}
-              />
-            </div>
-            <div
-              className="relative flex items-center justify-center"
-              style={{
-                width: "700px",
-                height: "700px",
-                backgroundColor: "#FDFDFD",
-              }}
-            >
-              <img
-                className="w-full h-full object-cover"
-                src={tshirt}
-                alt="Product Image 3"
-                style={{ backgroundColor: "#FDFDFD" }}
-              />
+              {images.map((image, index) => (
+                <div
+                  key={index}
+                  className={`flex items-center justify-center ${
+                    index % 2 === 0 ? "bg-[#7A7A7A]" : "bg-[#7A7A7A]"
+                  }`}
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    minWidth: "100%",
+                    maxHeight: "750px",
+                  }}
+                >
+                  <img
+                    className="w-full h-full object-cover"
+                    src={image}
+                    alt={`Product Image ${index + 1}`}
+                  />
+                </div>
+              ))}
             </div>
           </div>
 
+          {/* Product Details Section */}
           <div className="w-full lg:w-1/2 p-6 flex flex-col">
-            <h1 className="text-4xl font-bold mb-2">PRODUCT NAME</h1>
-            <p className="text-xl mb-4">PRICE</p>
+            <h1 className="text-2xl lg:text-4xl font-bold mb-2">PRODUCT NAME</h1>
+            <p className="text-lg lg:text-xl mb-4">PRICE</p>
 
             <div className="flex items-center mb-4">
               {[1, 2, 3].map((_, index) => (
@@ -99,7 +86,7 @@ const Product: React.FC = () => {
               </button>
             </div>
 
-            <h4 className="text-xl mb-2">DESCRIPTION</h4>
+            <h4 className="text-lg lg:text-xl mb-2">DESCRIPTION</h4>
             <p className="text-sm mb-2">
               Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
               eiusmod tempor incididunt ut labore et dolore magna aliqua.
@@ -111,16 +98,19 @@ const Product: React.FC = () => {
           </div>
         </section>
 
+        {/* "Visit More" Section */}
         <section className="mt-[80px]">
-          <div className="text-left mb-8">
-            <h2 className="text-4xl font-normal ml-4">VISIT MORE</h2>
+          <div className="text-left ">
+            <h2 className="ml-4 lg:ml-16 px-6 text-2xl lg:text-5xl font-normal font-montserrat uppercase leading-tight text-white mb-8">
+              VISIT MORE
+            </h2>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-[3px]">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
             {images.map((image, index) => (
               <div
                 key={index}
-                className="relative bg-[#BCBCBC] rounded-sm overflow-hidden"
-                style={{ width: "480px", height: "470px" }}
+                className="relative bg-[#7A7A7A] rounded-sm overflow-hidden"
+                style={{ width: "100%", height: "600px" }}
               >
                 <img
                   className="w-full h-full object-cover"

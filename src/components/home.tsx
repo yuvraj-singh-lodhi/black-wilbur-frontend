@@ -1,40 +1,26 @@
-import React, { useRef, useEffect } from "react";
+import { useNavigate } from "react-router-dom"; // Import useNavigate hook
 import carousel1 from "../assets/carousel1.png";
 import bestSellerImage from "../assets/best-seller-image.jpg";
 import videoSrc from "../assets/video-thumbnail.mp4";
 import blackBackground from "../assets/blackBackground.png";
 
 const Home: React.FC = () => {
-  const scrollContainerRef = useRef<HTMLDivElement>(null);
-  useEffect(() => {
-    const handleVerticalScroll = (e: Event) => {
-      if (scrollContainerRef.current) {
-        const scrollAmount = (e as WheelEvent).deltaY;
-        scrollContainerRef.current.scrollBy({
-          left: scrollAmount,
-          behavior: "smooth",
-        });
-      }
-    };
+  const navigate = useNavigate(); // Initialize the useNavigate hook
 
-    window.addEventListener("wheel", handleVerticalScroll, { passive: false });
-
-    return () => {
-      window.removeEventListener("wheel", handleVerticalScroll);
-    };
-  }, []);
+  const handleNavigate = (path: string) => {
+    navigate(path); // Programmatically navigate to the given path
+  };
 
   return (
     <>
       {/* Carousel Section */}
-      <div className="relative h-screen overflow-hidden min-h-screen">
+      <div className="relative h-screen overflow-hidden">
         <img
           src={carousel1}
           alt="Carousel 1"
           className="absolute inset-0 w-full h-full object-cover"
           style={{
             objectPosition: "center top",
-            // transform: "translateY(0%)",
           }}
         />
         <div className="hidden md:block">
@@ -67,68 +53,45 @@ const Home: React.FC = () => {
         </div>
       </div>
 
-      {/* Our Best Seller Section */}
-      <section className="py-16 bg-[#1B1B1B] relative overflow-x-hidden">
-        <div className="container mx-auto ">
-         <div className="px-3">
-         <h2 className="ml-16 text-4xl lg:text-5xl font-normal font-montserrat uppercase leading-tight text-white mb-8">
+      <section className="py-16 bg-[#1B1B1B] w-full relative overflow-x-hidden">
+        <div className="container mx-auto px-16">
+          <h2 className="text-4xl lg:text-5xl font-normal font-montserrat uppercase leading-tight text-white mb-8 text-start">
             Our Bestsellers
           </h2>
-         </div>
-         <div className="px-4">
-         <div
-            className="scroll-smooth"
+          <div
+            className="flex gap-2 overflow-x-auto w-full snap-x snap-mandatory"
             style={{
-              overflowX: "auto", // Enable horizontal scrolling
-              overflowY: "hidden", // Disable vertical overflow
-              scrollbarWidth: "none", // Hide scrollbar in Firefox
-              msOverflowStyle: "none", // Hide scrollbar in IE and Edge
+              scrollbarWidth: "none", // Hide scrollbar for Firefox
+              msOverflowStyle: "none", // Hide scrollbar for IE and Edge
             }}
           >
-            <div
-              className="flex gap-4 lg:gap-3"
-              ref={scrollContainerRef}
-              style={{
-                height: "75vh",
-              }}
-            >
-              {Array(7)
-                .fill(null)
-                .map((_, index) => (
-                  <div
-                    key={index}
-                    className="flex-shrink-0 flex items-center justify-center"
-                    style={{
-                      width: "450px", // Adjust width for better visibility
-                      height: "100%", // Ensure full height usage
-                    }}
-                  >
-                    <div className="bg-customGray flex flex-col shadow-lg p-4 w-full h-full items-center justify-center">
-                      <img
-                        src={bestSellerImage}
-                        alt="Best Seller"
-                        className="rounded-t-lg w-full h-full object-cover"
-                      />
-                      <div className="mt-auto w-full text-center p-2">
-                        <h2 className="font-montserrat text-xl font-normal text-[#f5f5f5] tracking-wider">
-                          CLASSIC BLACK
-                        </h2>
-                        <div className="mb-4 mt-1 h-[1px] bg-[#f5f5f5] w-[100px] mx-auto"></div>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-            </div>
+            {Array.from({ length: 7 }).map((_, index) => (
+              <div
+                key={index}
+                className="min-w-[300px] sm:min-w-[350px] lg:min-w-[400px] relative card bg-[#7A7A7A] overflow-hidden flex items-center justify-center snap-start"
+              >
+                <img
+                  className="w-full h-auto object-cover transition-transform duration-300 ease-in-out transform hover:scale-110"
+                  onClick={() => handleNavigate("/Product")}
+                  src={bestSellerImage}
+                  alt={`bestseller-${index}`}
+                />
+                {/* Absolute text on the image */}
+                <div className="absolute bottom-4 left-4 text-[#282828] text-lg font-semibold">
+                  CLASSIC BLACK
+                </div>
+                <div className="absolute bottom-4 right-4 text-[#636363] text-lg font-semibold">
+                  300rs
+                </div>
+              </div>
+            ))}
           </div>
-         </div>
-         
         </div>
-        <div className="absolute w-full bottom-0 left-1/2 transform -translate-x-1/2 border-t border-black"></div>
       </section>
 
       {/* Video Section */}
-      <section className="py-16 bg-[#1B1B1B] overflow-hidden">
-        <div className="container mx-auto px-16 text-center">
+      <section className="py-16 bg-[#1B1B1B]">
+        <div className="container mx-auto px-4 md:px-16 text-center">
           <div className="relative">
             <video
               src={videoSrc}
@@ -136,7 +99,7 @@ const Home: React.FC = () => {
               loop
               muted
               className="w-full max-w-full"
-              style={{ height: "auto" }}
+              style={{ height: "100vh" }}
             >
               Your browser does not support the video tag.
             </video>
@@ -145,22 +108,20 @@ const Home: React.FC = () => {
       </section>
 
       {/* Explore Our Collections Section */}
-      <section className="py-16 bg-[#1b1b1b] text-white overflow-hidden">
-        <div className="container mx-auto ">
-          <div className="px-16">
-          <h2 className="text-4xl lg:text-5xl font-normal font-montserrat uppercase leading-tight text-gray-100 mb-8 text-start">
+      <section className="py-16 bg-[#1b1b1b] text-white">
+        <div className="container mx-auto">
+          <h2 className="text-4xl px-16 lg:text-5xl font-normal font-montserrat uppercase leading-tight text-gray-100 mb-8 text-start">
             Explore Our Collections
           </h2>
-          </div>    
-          <div className="px-1">
-          <div className="px-1 grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-[1px]">
+          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-1 px-2">
             {Array.from({ length: 6 }).map((_, index) => (
               <div
                 key={index}
-                className="relative card bg-[#BCBCBC] overflow-hidden flex items-center justify-center"
+                className="relative card bg-[#7A7A7A] overflow-hidden flex items-center justify-center"
               >
                 <img
-                  className="w-full h-auto object-cover"
+                  className="w-full h-auto object-cover transition-transform duration-300 ease-in-out transform hover:scale-110"
+                  onClick={() => handleNavigate("/Product")}
                   src={bestSellerImage}
                   alt={`collection-${index}`}
                 />
@@ -174,8 +135,7 @@ const Home: React.FC = () => {
               </div>
             ))}
           </div>
-            </div>      
-     
+
           <div className="mt-12 flex justify-center">
             <button className="px-6 py-3 bg-black text-white rounded-full hover:bg-gray-800 transition">
               Shop Collections

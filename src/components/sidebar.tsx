@@ -41,6 +41,9 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
           <a href="#" className="text-2xl">
             ABOUT US
           </a>
+          <a href="#" className="text-2xl">
+            OWNER SHIP
+          </a>
         </div>
         <div className="flex items-start justify-center space-x-4 pr-14 pt-16">
           <MdFacebook className="text-2xl" />

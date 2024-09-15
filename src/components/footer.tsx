@@ -41,7 +41,8 @@ const Footer = () => {
       </div>
 
       <div className="footer-section2 mt-20 md:mt-24 lg:mt-36 w-full max-w-[848px] px-4">
-        <img src={logo} alt="Logo" className="w-full h-auto" />
+        <img src={logo} alt="Logo" className="w-full h-auto" 
+        />
       </div>
 
       <div className="footer-section3 mt-8 md:mt-12 text-center text-sm w-full max-w-[848px] px-4">
