@@ -1,19 +1,45 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom"; // Import useNavigate hook
 import img from "../assets/collection-carousel.jpg";
 import tshirt from "../assets/blackT.png";
 import { MdFilterList } from "react-icons/md";
 import { MdClose } from "react-icons/md";
-import { AiOutlinePlus } from "react-icons/ai";
+import { AiOutlinePlus, AiOutlineLeft, AiOutlineRight } from "react-icons/ai"; // Import icons for pagination
+
+const TOTAL_PRODUCTS = 50; // Example total number of products
 
 const Collection: React.FC = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1); // State to track current page
+  const productsPerPage = 12; // Products to show per page
+  const totalPages = Math.ceil(TOTAL_PRODUCTS / productsPerPage); // Calculate total pages
+
+  const navigate = useNavigate(); // Initialize the useNavigate hook
 
   const toggleSidebar = () => setSidebarOpen((prev) => !prev);
+  const handleNavigate = (path: string) => {
+    navigate(path); // Programmatically navigate to the given path
+  };
+
+  // Calculate products for the current page
+  const startIdx = (currentPage - 1) * productsPerPage;
+  const currentProducts = Array.from({ length: TOTAL_PRODUCTS }).slice(
+    startIdx,
+    startIdx + productsPerPage
+  );
+
+  const handleNextPage = () => {
+    if (currentPage < totalPages) setCurrentPage((prev) => prev + 1);
+  };
+
+  const handlePrevPage = () => {
+    if (currentPage > 1) setCurrentPage((prev) => prev - 1);
+  };
 
   return (
     <>
       <div className="main-container scrollbar-thin w-full min-h-screen bg-[#1b1b1b] text-white">
-        <div className="image-container w-full h-[88vh]">
+        <div className="image-container w-full h-[100vh]">
           <img
             className="w-full h-full object-cover"
             src={img}
@@ -21,7 +47,7 @@ const Collection: React.FC = () => {
             style={{ objectPosition: "center bottom" }}
           />
         </div>
-        <div className="content-container w-full bg-[#141414] p-0">
+        <div className="content-container w-full bg-[#141414] pb-4">
           <div className="header-container w-full flex justify-between items-center p-6 border-b border-[#6C6C6C]">
             <div
               className="collections text-[#FFFFFF] font-bold"
@@ -56,14 +82,15 @@ const Collection: React.FC = () => {
           <div className="product-container w-full mt-6 px-0">
             {/* Grid layout with 3 images per row and 3px gap */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-1 w-full">
-              {Array.from({ length: 12 }).map((_, index) => (
+              {currentProducts.map((_, index) => (
                 <div
                   key={index}
-                  className="relative bg-[#BCBCBC] rounded-sm overflow-hidden flex items-center justify-center"
+                  className="relative bg-[#7A7A7A] rounded-sm overflow-hidden flex items-center justify-center"
                 >
                   <img
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-cover cursor-pointer"
                     src={tshirt}
+                    onClick={() => handleNavigate("/Product")}
                     alt={`tshirt-${index}`}
                   />
                   <div className="absolute bottom-2 left-2 text-[#282828] text-sm font-semibold">
@@ -75,6 +102,27 @@ const Collection: React.FC = () => {
                 </div>
               ))}
             </div>
+          </div>
+
+          {/* Pagination Controls */}
+          <div className="pagination-container flex justify-center items-center mt-4">
+            <button
+              onClick={handlePrevPage}
+              disabled={currentPage === 1}
+              className="w-7 h-7 text-black rounded-full bg-white disabled:bg-gray-400 flex items-center justify-center"
+            >
+              <AiOutlineLeft className="text-xl" /> {/* Previous Icon */}
+            </button>
+            <span className="mx-4 text-white">
+              Page {currentPage} of {totalPages}
+            </span>
+            <button
+              onClick={handleNextPage}
+              disabled={currentPage === totalPages}
+              className="w-7 h-7 text-black rounded-full bg-white disabled:bg-gray-400 flex items-center justify-center"
+            >
+              <AiOutlineRight className="text-xl" /> {/* Next Icon */}
+            </button>
           </div>
         </div>
 
