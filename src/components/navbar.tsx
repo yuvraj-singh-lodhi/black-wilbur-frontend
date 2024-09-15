@@ -1,18 +1,25 @@
 import React, { useState, useEffect } from "react";
 import { MdMenu } from "react-icons/md";
-import { FaSearch } from "react-icons/fa";
+import { FaSearch, FaShoppingCart } from "react-icons/fa";
 import { FaCircleUser } from "react-icons/fa6";
 import { useNavigate } from "react-router-dom";
 import logo from "../assets/navlogo.svg";
 import Sidebar from "./sidebar";
+import AddToCartSidebar from "./addtocartsidebar";
 
 const Navbar: React.FC = () => {
   const [sidebar, setSidebar] = useState(false);
   const [hideNavbar, setHideNavbar] = useState(false);
+  const [isCartOpen, setIsCartOpen] = useState(false); // For AddToCart Sidebar
   const navigate = useNavigate();
 
   const toggleSidebar = () => {
     setSidebar(!sidebar);
+  };
+
+  // Toggle Cart Sidebar
+  const toggleCartSidebar = () => {
+    setIsCartOpen(!isCartOpen);
   };
 
   // Effect to hide navbar on scroll
@@ -43,31 +50,36 @@ const Navbar: React.FC = () => {
         <div className="hidden md:flex h-24 flex-col w-full">
           {/* For Large Screens */}
           <div className="hidden h-20 md:flex items-center justify-between w-full pl-16 pr-16 text-white border-b-2 border-white">
-            <MdMenu
+          <div className="flex items-center space-x-4">
+          <MdMenu
               className="text-4xl cursor-pointer"
               onClick={toggleSidebar}
             />
+            <FaSearch className="text-2xl" />
+            </div>
+            
             <img
-          
               onClick={() => handleNavigate("/")}
               src={logo}
               alt="BlackWilbur"
               className="h-18 w-40 mx-auto text-white"
               style={{ filter: "invert(1)" }} // Inverts the colors
-
             />
             <div className="flex items-center space-x-4">
-              <FaSearch className="text-2xl" />
               <FaCircleUser
                 onClick={() => handleNavigate("/Login")}
-                className="text-2xl"
+                className="text-2xl cursor-pointer"
+              />
+              <FaShoppingCart
+                onClick={toggleCartSidebar}
+                className="text-2xl cursor-pointer"
               />
             </div>
           </div>
           {/* Mini Navbar */}
           <div className="hidden h-8 md:flex items-center justify-center w-full pl-16 pr-10 space-x-4 text-white">
-            {/* Buttons that use navigate */} 
-            {["Collection", "Oversize", "Round Neck", "Polo","Knitted"].map(
+            {/* Buttons that use navigate */}
+            {["Collection", "Oversize", "Round Neck", "Polo", "Knitted"].map(
               (item) => (
                 <button
                   key={item}
@@ -82,13 +94,24 @@ const Navbar: React.FC = () => {
         </div>
 
         {/* For Medium and Small Screens */}
-        <div className="flex md:hidden items-center justify-between w-full h-12 p-2">
-          {" "}
+        <div className="flex md:hidden items-center justify-between w-full h-12 p-2 text-white">
           {/* Reduced height and padding */}
-          <img src={logo} alt="BlackWilbur" className="h-6" />
+          <img
+            src={logo}
+            alt="BlackWilbur"
+            className="h-6"
+            style={{ filter: "invert(1)" }} // Inverts the colors
+          />
           <div className="flex items-center space-x-4">
-            <FaCircleUser className="text-xl" />
             <FaSearch className="text-xl" />
+            <FaShoppingCart
+              onClick={toggleCartSidebar}
+              className="text-xl cursor-pointer"
+            />
+            <FaCircleUser
+              onClick={() => handleNavigate("/Login")}
+              className="text-xl cursor-pointer"
+            />
             <MdMenu
               className="text-2xl cursor-pointer pr-2"
               onClick={toggleSidebar}
@@ -99,6 +122,11 @@ const Navbar: React.FC = () => {
 
       {/* Sidebar component */}
       <Sidebar isOpen={sidebar} onClose={toggleSidebar} />
+
+      {/* Add to Cart Sidebar */}
+      <div className="text-black">
+      <AddToCartSidebar isOpen={isCartOpen} onClose={toggleCartSidebar} />
+      </div>
     </>
   );
 };

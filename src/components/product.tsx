@@ -1,21 +1,27 @@
-import React from "react";
+import React, { useState } from "react";
 import { IoIosStar } from "react-icons/io";
 import tshirt from "../assets/blackT.png";
+import { useNavigate } from "react-router-dom";
+import AddToCartSidebar from "./addtocartsidebar";
 
 const Product: React.FC = () => {
   const images = [tshirt, tshirt, tshirt];
+  const [isCartOpen, setIsCartOpen] = useState(false);
+
+  const navigate = useNavigate(); // Initialize the useNavigate hook inside the component
+  const toggleCart = () => {
+    setIsCartOpen(!isCartOpen);
+  };
+  const handleNavigate = (path: string) => {
+    navigate(path); // Programmatically navigate to the given path
+  };
 
   return (
     <div className="bg-[#1B1B1B] text-white  min-h-screen">
-      {/* Header Section */}
-      <div className="bg-[#D9D9D9] h-[80px]" />
-
-      {/* Main Content Section */}
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <section className="flex flex-col lg:flex-row gap-10 justify-center items-start">
-          {/* Scrollable Image Section */}
+      <div className="bg-[#1B1B1B] h-[80px]" />
+      <div className="container mx-auto px-4  sm:px-6 lg:px-8">
+        <section className="flex flex-col lg:pt-12 lg:flex-row gap-10 justify-center items-start">
           <div className="w-full lg:w-1/2 flex flex-col lg:flex-row items-center gap-0">
-            {/* Small screens: Horizontal scroll, Large screens: Vertical scroll */}
             <div
               className="relative flex lg:flex-col items-center gap-2 overflow-x-auto lg:overflow-y-auto lg:overflow-x-hidden hover:overflow-scroll scrollbar-none"
               style={{
@@ -50,7 +56,9 @@ const Product: React.FC = () => {
 
           {/* Product Details Section */}
           <div className="w-full lg:w-1/2 p-6 flex flex-col">
-            <h1 className="text-2xl lg:text-4xl font-bold mb-2">PRODUCT NAME</h1>
+            <h1 className="text-2xl lg:text-4xl font-bold mb-2">
+              PRODUCT NAME
+            </h1>
             <p className="text-lg lg:text-xl mb-4">PRICE</p>
 
             <div className="flex items-center mb-4">
@@ -78,10 +86,16 @@ const Product: React.FC = () => {
             </div>
 
             <div className="flex gap-4 mb-8">
-              <button className="px-4 py-2 bg-[#1B1B1B] border border-white text-white rounded-full">
+              <button
+                onClick={toggleCart}
+                className="px-4 py-2 bg-[#1B1B1B] border border-white text-white rounded-full"
+              >
                 ADD TO CART
               </button>
-              <button className="px-4 py-2 bg-white text-black rounded-full">
+              <button
+                onClick={() => handleNavigate("/Checkout")}
+                className="px-4 py-2 bg-white text-black rounded-full"
+              >
                 BUY NOW!
               </button>
             </div>
@@ -99,7 +113,7 @@ const Product: React.FC = () => {
         </section>
 
         {/* "Visit More" Section */}
-        <section className="mt-[80px]">
+        <section className="mt-[80px] h-lvh ">
           <div className="text-left ">
             <h2 className="ml-4 lg:ml-16 px-6 text-2xl lg:text-5xl font-normal font-montserrat uppercase leading-tight text-white mb-8">
               VISIT MORE
@@ -122,7 +136,9 @@ const Product: React.FC = () => {
           </div>
         </section>
       </div>
-    </div>
+ <div className="text-black">
+      <AddToCartSidebar isOpen={isCartOpen} onClose={toggleCart} />
+      </div>    </div>
   );
 };
 

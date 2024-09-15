@@ -179,6 +179,7 @@ const Home: React.FC = () => {
                 fontWeight: "400",
                 textAlign: "center",
               }}
+              onClick={() => handleNavigate("/AboutUs")}
             >
               Explore
             </button>
