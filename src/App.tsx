@@ -21,9 +21,8 @@ function App() {
           <Route path="/collection" element={<Collection />} />
           <Route path="/Login" element={<LoginSignup />} />
           <Route path="/Product" element={<Product />} />
-          <Route path="/AboutUs" element={<AboutUs />} /> 
-          <Route path="/Checkout" element={<Checkout />} /> 
-
+          <Route path="/AboutUs" element={<AboutUs />} />
+          <Route path="/Checkout" element={<Checkout />} />
         </Routes>
         <Footer />
       </div>

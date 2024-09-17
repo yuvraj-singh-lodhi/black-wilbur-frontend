@@ -35,7 +35,6 @@ const Navbar: React.FC = () => {
     };
   }, []);
 
-  // Function to handle navigation on button click
   const handleNavigate = (path: string) => {
     navigate(path);
   };
@@ -50,14 +49,14 @@ const Navbar: React.FC = () => {
         <div className="hidden md:flex h-24 flex-col w-full">
           {/* For Large Screens */}
           <div className="hidden h-20 md:flex items-center justify-between w-full pl-16 pr-16 text-white border-b-2 border-white">
-          <div className="flex items-center space-x-4">
-          <MdMenu
-              className="text-4xl cursor-pointer"
-              onClick={toggleSidebar}
-            />
-            <FaSearch className="text-2xl" />
+            <div className="flex items-center space-x-4">
+              <MdMenu
+                className="text-4xl cursor-pointer"
+                onClick={toggleSidebar}
+              />
+              <FaSearch className="text-2xl" />
             </div>
-            
+
             <img
               onClick={() => handleNavigate("/")}
               src={logo}
@@ -125,7 +124,7 @@ const Navbar: React.FC = () => {
 
       {/* Add to Cart Sidebar */}
       <div className="text-black">
-      <AddToCartSidebar isOpen={isCartOpen} onClose={toggleCartSidebar} />
+        <AddToCartSidebar isOpen={isCartOpen} onClose={toggleCartSidebar} />
       </div>
     </>
   );
