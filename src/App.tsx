@@ -27,7 +27,6 @@ function App() {
           <Route path="/Checkout" element={<Checkout />} /> 
           <Route path="/AdminPanel" element={<AdminPanel />} /> 
           <Route path="/admin-login" element={<AdminLogin />} /> 
-
         </Routes>
         <Footer />
       </div>
