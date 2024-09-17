@@ -9,6 +9,8 @@ import Product from "./components/product";
 import ScrollToTop from "./context/ScrollToTop";
 import AboutUs from "./components/aboutus";
 import Checkout from "./components/checkout";
+import AdminPanel from "./admin/adminpanel";
+import AdminLogin from "./admin/adminlogin";
 
 function App() {
   return (
@@ -23,6 +25,8 @@ function App() {
           <Route path="/Product" element={<Product />} />
           <Route path="/AboutUs" element={<AboutUs />} /> 
           <Route path="/Checkout" element={<Checkout />} /> 
+          <Route path="/AdminPanel" element={<AdminPanel />} /> 
+          <Route path="/admin-login" element={<AdminLogin />} /> 
 
         </Routes>
         <Footer />
