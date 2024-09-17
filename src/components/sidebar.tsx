@@ -1,4 +1,5 @@
 import React from "react";
+import { useNavigate } from "react-router-dom"; // Import useNavigate hook
 import { MdClose, MdFacebook } from "react-icons/md";
 import { BsTwitterX } from "react-icons/bs";
 import { FaInstagram } from "react-icons/fa";
@@ -9,6 +10,12 @@ interface SidebarProps {
 }
 
 const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
+  const navigate = useNavigate(); // Initialize the useNavigate hook inside the component
+
+  const handleNavigate = (path: string) => {
+    navigate(path); // Programmatically navigate to the given path
+  };
+
   return (
     <>
       {/* Backdrop */}
@@ -29,17 +36,20 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
           <MdClose className="text-2xl cursor-pointer" onClick={onClose} />
         </div>
         <div className="flex flex-col items-start justify-center gap-6 pt-20 pl-12 pb-8 font-light tracking-wide ">
-          <a href="#" className="text-2xl">
+          <a onClick={() => handleNavigate("/Login")} className="text-2xl cursor-pointer">
             LOGIN
           </a>
-          <a href="#" className="text-2xl">
+          <a onClick={() => handleNavigate("/")} className="text-2xl cursor-pointer">
             CONTACT
           </a>
-          <a href="#" className="text-2xl">
+          <a onClick={() => handleNavigate("/collection")} className="text-2xl cursor-pointer">
             COLLECTION
           </a>
-          <a href="#" className="text-2xl">
+          <a onClick={() => handleNavigate("/AboutUs")} className="text-2xl cursor-pointer">
             ABOUT US
+          </a>
+          <a onClick={() => handleNavigate("/")} className="text-2xl cursor-pointer">
+            OWNER SHIP
           </a>
         </div>
         <div className="flex items-start justify-center space-x-4 pr-14 pt-16">
