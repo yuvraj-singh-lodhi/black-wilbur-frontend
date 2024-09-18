@@ -36,12 +36,13 @@ const Navbar: React.FC = (): JSX.Element => {
 
   const handleNavigate = (path: string): void => {
     navigate(path);
+    setSidebar(false); // Close the sidebar before navigating
   };
 
   return (
     <>
       <nav
-        className={`navbar top-0 left-0 w-full flex items-center justify-between pl-4 pr-4 pb-2  bg-black z-50 transition-opacity duration-300 ease-in-out ${
+        className={`navbar top-0 left-0 w-full flex items-center justify-between pl-4 pr-4 pb-2 bg-black z-50 transition-opacity duration-300 ease-in-out ${
           hideNavbar ? "opacity-0 pointer-events-none" : "opacity-100"
         }`}
       >
@@ -77,7 +78,6 @@ const Navbar: React.FC = (): JSX.Element => {
 
           {/* Mini Navbar */}
           <div className="hidden h-8 md:flex items-center justify-center w-full pl-16 pr-10 space-x-4 text-white">
-            {/* Buttons that use navigate */}
             {["Collection", "Oversize", "Round Neck", "Polo", "Knitted"].map(
               (item) => (
                 <button
@@ -94,7 +94,6 @@ const Navbar: React.FC = (): JSX.Element => {
 
         {/* For Medium and Small Screens */}
         <div className="flex md:hidden items-center justify-between w-full h-12 p-2 text-white">
-          {/* Reduced height and padding */}
           <img
             src={logo}
             alt="BlackWilbur"
@@ -120,7 +119,7 @@ const Navbar: React.FC = (): JSX.Element => {
       </nav>
 
       {/* Sidebar component */}
-      <Sidebar isOpen={sidebar} onClose={toggleSidebar} />
+      <Sidebar isOpen={sidebar} onClose={() => setSidebar(false)} />
 
       {/* Add to Cart Sidebar */}
       <div className="text-black">
