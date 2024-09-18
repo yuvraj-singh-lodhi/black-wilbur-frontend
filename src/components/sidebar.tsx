@@ -102,7 +102,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
             OWNER SHIP
           </a>
         </div>
-        <div className="flex items-start justify-center space-x-4 pr-14 pt-16">
+        <div className="flex items-start justify-center space-x-4 pr-14 pt-14">
           <MdFacebook className="text-2xl" />
           <BsTwitterX className="text-2xl" />
           <FaInstagram className="text-2xl" />
