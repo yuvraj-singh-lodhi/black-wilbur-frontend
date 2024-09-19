@@ -15,7 +15,7 @@ const Home: React.FC = () => {
 
   // Function to get product images by product ID
   const getProductImages = (productId: number) =>
-    productImages.filter(image => image.productId === productId);
+    productImages.filter((image) => image.productId === productId);
 
   return (
     <>
@@ -75,7 +75,7 @@ const Home: React.FC = () => {
               msOverflowStyle: "none", // Hide scrollbar for IE and Edge
             }}
           >
-            {products.map(product => {
+            {products.map((product) => {
               const images = getProductImages(product.id);
               return (
                 <div
@@ -122,11 +122,11 @@ const Home: React.FC = () => {
       {/* Explore Our Collections Section */}
       <section className="py-16 bg-[#1b1b1b] text-white">
         <div className="container mx-auto">
-          <h2 className="text-4xl px-16 lg:text-5xl font-normal font-montserrat uppercase leading-tight text-gray-100 mb-8 text-start">
+          <h2 className="text-4xl px-2 lg:text-5xl font-normal font-montserrat uppercase leading-tight text-white mb-8 text-start">
             Explore Our Collections
           </h2>
           <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-1 px-2">
-            {products.map(product => {
+            {products.map((product) => {
               const images = getProductImages(product.id);
               return (
                 <div
@@ -151,7 +151,10 @@ const Home: React.FC = () => {
           </div>
 
           <div className="mt-12 flex justify-center">
-            <button className="px-6 py-3 bg-black text-white rounded-full hover:bg-gray-800 transition">
+            <button
+              className="px-6 py-3 bg-black text-white rounded-full hover:bg-gray-800 transition"
+              onClick={() => handleNavigate("/collection")}
+            >
               Shop Collections
             </button>
           </div>
