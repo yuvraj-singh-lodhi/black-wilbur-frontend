@@ -11,6 +11,8 @@ import AboutUs from "./components/aboutus";
 import Checkout from "./components/checkout";
 import AdminPanel from "./admin/adminpanel";
 import AdminLogin from "./admin/adminlogin";
+import UserProfile from "./components/userprofile";
+import ViewAddresses from "./components/viewaddresses";
 
 function App() {
   return (
@@ -22,11 +24,14 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/collection" element={<Collection />} />
           <Route path="/Login" element={<LoginSignup />} />
-          <Route path="/Product" element={<Product />} />
+          <Route path="/Product/:id" element={<Product />} />
           <Route path="/AboutUs" element={<AboutUs />} /> 
           <Route path="/Checkout" element={<Checkout />} /> 
           <Route path="/AdminPanel" element={<AdminPanel />} /> 
           <Route path="/admin-login" element={<AdminLogin />} /> 
+          <Route path="/UserProfile" element={<UserProfile />} /> 
+          <Route path="/ViewAddresses" element={<ViewAddresses />} /> 
+
         </Routes>
         <Footer />
       </div>

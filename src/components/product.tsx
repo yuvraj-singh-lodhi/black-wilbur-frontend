@@ -4,16 +4,33 @@ import tshirt from "../assets/blackT.png";
 import { useNavigate } from "react-router-dom";
 import AddToCartSidebar from "./addtocartsidebar";
 
+// Sample product data
+const sampleProduct = {
+  name: "Black T-Shirt",
+  price: "₹999",
+  description: `This black T-shirt is made from high-quality cotton and offers superior comfort for everyday wear. 
+  Its minimalistic design makes it easy to pair with any casual outfit.`,
+  sizes: ["S", "M", "L", "XL"],
+  rating: 4.5,
+  images: [tshirt, tshirt, tshirt], // Array of product images
+};
+
 const Product: React.FC = () => {
-  const images = [tshirt, tshirt, tshirt];
+  const [selectedSize, setSelectedSize] = useState<string | null>(null);
   const [isCartOpen, setIsCartOpen] = useState(false);
+  const [product] = useState(sampleProduct); // Set product data
 
   const navigate = useNavigate();
   const toggleCart = () => {
     setIsCartOpen(!isCartOpen);
   };
+
   const handleNavigate = (path: string) => {
     navigate(path);
+  };
+
+  const handleSizeSelect = (size: string) => {
+    setSelectedSize(size);
   };
 
   return (
@@ -33,7 +50,7 @@ const Product: React.FC = () => {
                 height: "100%",
               }}
             >
-              {images.map((image, index) => (
+              {product.images.map((image, index) => (
                 <div
                   key={index}
                   className="flex items-center justify-center bg-[#7A7A7A]"
@@ -56,16 +73,18 @@ const Product: React.FC = () => {
           {/* Product Details Section */}
           <div className="w-full lg:w-1/2 p-6 flex flex-col">
             <h1 className="text-2xl lg:text-4xl font-bold mb-2">
-              PRODUCT NAME
+              {product.name}
             </h1>
-            <p className="text-lg lg:text-xl mb-4">PRICE</p>
+            <p className="text-lg lg:text-xl mb-4">{product.price}</p>
 
             <div className="flex items-center mb-4">
-              {[1, 2, 3].map((_, index) => (
+              {[...Array(5)].map((_, index) => (
                 <IoIosStar
                   key={index}
                   className={`w-6 h-6 ${
-                    index === 2 ? "text-yellow-500" : "text-white"
+                    index < Math.floor(product.rating)
+                      ? "text-yellow-500"
+                      : "text-white"
                   }`}
                   style={{ marginRight: "5px" }}
                 />
@@ -74,10 +93,13 @@ const Product: React.FC = () => {
 
             <p className="text-sm mb-1">SELECT SIZE</p>
             <div className="flex gap-2 mb-4">
-              {["S", "M", "L", "XL"].map((size) => (
+              {product.sizes.map((size) => (
                 <div
                   key={size}
-                  className="w-8 h-8 border rounded-full flex items-center justify-center border-gray-300"
+                  onClick={() => handleSizeSelect(size)}
+                  className={`w-8 h-8 border rounded-full flex items-center justify-center border-gray-300 cursor-pointer ${
+                    selectedSize === size ? "bg-gray-300 text-black" : ""
+                  }`}
                 >
                   {size}
                 </div>
@@ -100,14 +122,7 @@ const Product: React.FC = () => {
             </div>
 
             <h4 className="text-lg lg:text-xl mb-2">DESCRIPTION</h4>
-            <p className="text-sm mb-2">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
-              eiusmod tempor incididunt ut labore et dolore magna aliqua.
-            </p>
-            <p className="text-sm">
-              Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris
-              nisi ut aliquip ex ea commodo consequat.
-            </p>
+            <p className="text-sm mb-2">{product.description}</p>
           </div>
         </section>
 
@@ -119,7 +134,7 @@ const Product: React.FC = () => {
             </h2>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
-            {images.map((image, index) => (
+            {product.images.map((image, index) => (
               <div
                 key={index}
                 className="relative bg-[#7A7A7A] rounded-sm overflow-hidden"

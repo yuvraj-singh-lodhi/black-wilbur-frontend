@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { MdClose } from 'react-icons/md';
 import tshirt from "../assets/blackT.png"; // Replace with your product image path
 
 interface AddToCartSidebarProps {
@@ -7,42 +8,100 @@ interface AddToCartSidebarProps {
 }
 
 const AddToCartSidebar: React.FC<AddToCartSidebarProps> = ({ isOpen, onClose }) => {
+  // Sample cart data
+  const [cartItems, setCartItems] = useState([
+    { id: 1, name: 'Black Tshirt ', size: 'XS', price: 12000, quantity: 1, image: tshirt },
+    { id: 2, name: 'Black Oversized', size: 'M', price: 6000, quantity: 2, image: tshirt },
+  ]);
+
+  const removeFromCart = (itemId: number) => {
+    setCartItems((prevItems) => prevItems.filter((item) => item.id !== itemId));
+  };
+
+  const updateQuantity = (itemId: number, newQuantity: number) => {
+    setCartItems((prevItems) =>
+      prevItems.map((item) =>
+        item.id === itemId ? { ...item, quantity: newQuantity } : item
+      )
+    );
+  };
+
+  const totalPrice = cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
+
   return (
-    <div className={`fixed inset-0 z-50 transform ${isOpen ? 'translate-x-0' : 'translate-x-full'} transition-transform duration-300 ease-in-out`}>
-      {/* Overlay */}
-      <div className="fixed inset-0 bg-black bg-opacity-50" onClick={onClose}></div>
+    <>
+      {/* Backdrop */}
+      {isOpen && (
+        <div
+          className="fixed inset-0 bg-black bg-opacity-50 z-30"
+          onClick={onClose}
+        ></div>
+      )}
 
       {/* Sidebar */}
-      <div className="absolute right-0 w-80 bg-white h-full shadow-lg flex flex-col">
+      <div
+        className={`fixed top-0 right-0 h-full w-80 bg-white shadow-lg transform ${
+          isOpen ? 'translate-x-0' : 'translate-x-full'
+        } transition-transform duration-300 ease-in-out z-50`}
+      >
         <div className="p-4 flex justify-between items-center border-b border-gray-300">
           <h2 className="text-lg font-bold">Your Cart</h2>
           <button onClick={onClose} className="text-gray-500 hover:text-gray-800">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="w-6 h-6">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-            </svg>
+            <MdClose className="w-6 h-6" />
           </button>
         </div>
 
         {/* Cart Items */}
         <div className="flex-1 p-4 overflow-y-auto">
-          {/* Example Cart Item */}
-          <div className="flex items-center mb-4">
-            <img src={tshirt} alt="Product" className="w-16 h-16 object-cover rounded-md" />
-            <div className="ml-4">
-              <p className="font-bold">Blvck x UNO Hoodie</p>
-              <p className="text-sm">Size: XS</p>
-              <p className="text-sm">1 x ₹12,000.00</p>
-            </div>
-          </div>
-
-          {/* Add more items here if needed */}
+          {cartItems.length === 0 ? (
+            <p>Your cart is empty</p>
+          ) : (
+            cartItems.map((item) => (
+              <div key={item.id} className="flex items-center mb-4">
+                <img
+                  src={item.image}
+                  alt={item.name}
+                  className="w-16 h-16 object-cover rounded-md"
+                />
+                <div className="ml-4 flex-1">
+                  <p className="font-bold">{item.name}</p>
+                  <p className="text-sm">Size: {item.size}</p>
+                  <p className="text-sm">
+                    {item.quantity} x ₹{item.price}
+                  </p>
+                  <div className="flex mt-2">
+                    <button
+                      className="px-2 py-1 bg-gray-200 rounded-md"
+                      onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                      disabled={item.quantity <= 1}
+                    >
+                      -
+                    </button>
+                    <span className="px-4">{item.quantity}</span>
+                    <button
+                      className="px-2 py-1 bg-gray-200 rounded-md"
+                      onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                    >
+                      +
+                    </button>
+                  </div>
+                  <button
+                    onClick={() => removeFromCart(item.id)}
+                    className="text-red-500 text-sm mt-2 hover:underline"
+                  >
+                    Remove
+                  </button>
+                </div>
+              </div>
+            ))
+          )}
         </div>
 
         {/* Cart Summary */}
         <div className="p-4 border-t border-gray-300">
           <div className="flex justify-between mb-2">
             <span>Subtotal</span>
-            <span>₹12,000.00</span>
+            <span>₹{totalPrice.toLocaleString('en-IN')}</span>
           </div>
           <div className="flex justify-between mb-2">
             <span>Shipping</span>
@@ -50,7 +109,7 @@ const AddToCartSidebar: React.FC<AddToCartSidebarProps> = ({ isOpen, onClose }) 
           </div>
           <div className="flex justify-between font-bold">
             <span>Total</span>
-            <span>₹12,000.00</span>
+            <span>₹{totalPrice.toLocaleString('en-IN')}</span>
           </div>
 
           {/* Checkout Button */}
@@ -59,7 +118,7 @@ const AddToCartSidebar: React.FC<AddToCartSidebarProps> = ({ isOpen, onClose }) 
           </button>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 
