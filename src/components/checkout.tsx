@@ -170,7 +170,7 @@ const Checkout: React.FC = () => {
               <div className="flex items-center mb-4">
                 <img src={tshirt} alt="Product" className="w-24 h-24 object-cover rounded-md" />
                 <div className="ml-4">
-                  <p className="font-bold">Blvck x UNO Hoodie</p>
+                  <p className="font-bold">Black T-shirt</p>
                   <p className="text-sm">Size: XS</p>
                   <p className="text-sm">1 x ₹12,000.00</p>
                 </div>

@@ -1,15 +1,21 @@
-import { useNavigate } from "react-router-dom"; // Import useNavigate hook
+import React from "react";
+import { useNavigate } from "react-router-dom";
+import { products, productImages } from "../data/product"; // Import products and productImages
 import carousel1 from "../assets/carousel1.png";
-import bestSellerImage from "../assets/best-seller-image.jpg";
+import bestSellerImage from "../assets/best-seller-image.jpg"; // You might not need this if using dynamic images
 import videoSrc from "../assets/video-thumbnail.mp4";
 import blackBackground from "../assets/blackBackground.png";
 
 const Home: React.FC = () => {
-  const navigate = useNavigate(); // Initialize the useNavigate hook
+  const navigate = useNavigate();
 
   const handleNavigate = (path: string) => {
-    navigate(path); // Programmatically navigate to the given path
+    navigate(path);
   };
+
+  // Function to get product images by product ID
+  const getProductImages = (productId: number) =>
+    productImages.filter(image => image.productId === productId);
 
   return (
     <>
@@ -53,6 +59,7 @@ const Home: React.FC = () => {
         </div>
       </div>
 
+      {/* Best Sellers Section */}
       <section className="py-16 bg-[#1B1B1B] w-full relative overflow-x-hidden">
         <div className="container mx-auto px-16">
           <h2 className="text-4xl lg:text-5xl font-normal font-montserrat uppercase leading-tight text-white mb-8 text-start">
@@ -65,26 +72,28 @@ const Home: React.FC = () => {
               msOverflowStyle: "none", // Hide scrollbar for IE and Edge
             }}
           >
-            {Array.from({ length: 7 }).map((_, index) => (
-              <div
-                key={index}
-                className="min-w-[300px] sm:min-w-[350px] lg:min-w-[400px] relative card bg-[#7A7A7A] overflow-hidden flex items-center justify-center snap-start"
-              >
-                <img
-                  className="w-full h-auto object-cover transition-transform duration-300 ease-in-out transform hover:scale-110"
-                  onClick={() => handleNavigate("/Product")}
-                  src={bestSellerImage}
-                  alt={`bestseller-${index}`}
-                />
-                {/* Absolute text on the image */}
-                <div className="absolute bottom-4 left-4 text-[#282828] text-lg font-semibold">
-                  CLASSIC BLACK
+            {products.map(product => {
+              const images = getProductImages(product.id);
+              return (
+                <div
+                  key={product.id}
+                  className="min-w-[300px] sm:min-w-[350px] lg:min-w-[400px] relative card bg-[#7A7A7A] overflow-hidden flex items-center justify-center snap-start"
+                >
+                  <img
+                    className="w-full h-auto object-cover transition-transform duration-300 ease-in-out transform hover:scale-110"
+                    onClick={() => handleNavigate(`/Product/${product.id}`)}
+                    src={images[0]?.url || bestSellerImage} // Fallback image
+                    alt={product.name}
+                  />
+                  <div className="absolute bottom-4 left-4 text-[#282828] text-lg font-semibold">
+                    {product.name.toUpperCase()}
+                  </div>
+                  <div className="absolute bottom-4 right-4 text-[#636363] text-lg font-semibold">
+                    {product.price}rs
+                  </div>
                 </div>
-                <div className="absolute bottom-4 right-4 text-[#636363] text-lg font-semibold">
-                  300rs
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </section>
@@ -114,26 +123,28 @@ const Home: React.FC = () => {
             Explore Our Collections
           </h2>
           <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-1 px-2">
-            {Array.from({ length: 6 }).map((_, index) => (
-              <div
-                key={index}
-                className="relative card bg-[#7A7A7A] overflow-hidden flex items-center justify-center"
-              >
-                <img
-                  className="w-full h-auto object-cover transition-transform duration-300 ease-in-out transform hover:scale-110"
-                  onClick={() => handleNavigate("/Product")}
-                  src={bestSellerImage}
-                  alt={`collection-${index}`}
-                />
-                {/* Absolute text on the image */}
-                <div className="absolute bottom-4 left-4 text-[#282828] text-lg font-semibold">
-                  T-SHIRT
+            {products.map(product => {
+              const images = getProductImages(product.id);
+              return (
+                <div
+                  key={product.id}
+                  className="relative card bg-[#7A7A7A] overflow-hidden flex items-center justify-center"
+                >
+                  <img
+                    className="w-full h-auto object-cover transition-transform duration-300 ease-in-out transform hover:scale-110"
+                    onClick={() => handleNavigate(`/Product/${product.id}`)}
+                    src={images[0]?.url || bestSellerImage} // Fallback image
+                    alt={product.name}
+                  />
+                  <div className="absolute bottom-4 left-4 text-[#282828] text-lg font-semibold">
+                    {product.name.toUpperCase()}
+                  </div>
+                  <div className="absolute bottom-4 right-4 text-[#636363] text-lg font-semibold">
+                    {product.price}rs
+                  </div>
                 </div>
-                <div className="absolute bottom-4 right-4 text-[#636363] text-lg font-semibold">
-                  300rs
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
 
           <div className="mt-12 flex justify-center">
