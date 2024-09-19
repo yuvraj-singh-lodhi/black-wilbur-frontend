@@ -7,22 +7,21 @@ import logo from "../assets/navlogo.svg";
 import Sidebar from "./sidebar";
 import AddToCartSidebar from "./addtocartsidebar";
 
-const Navbar: React.FC = () => {
-  const [sidebar, setSidebar] = useState(false);
-  const [hideNavbar, setHideNavbar] = useState(false);
-  const [isCartOpen, setIsCartOpen] = useState(false); // For AddToCart Sidebar
+const Navbar: React.FC = (): JSX.Element => {
+  const [sidebar, setSidebar] = useState<boolean>(false);
+  const [hideNavbar, setHideNavbar] = useState<boolean>(false);
+  const [isCartOpen, setIsCartOpen] = useState<boolean>(false);
+
   const navigate = useNavigate();
 
-  const toggleSidebar = () => {
+  const toggleSidebar = (): void => {
     setSidebar(!sidebar);
   };
 
-  // Toggle Cart Sidebar
-  const toggleCartSidebar = () => {
+  const toggleCartSidebar = (): void => {
     setIsCartOpen(!isCartOpen);
   };
 
-  // Effect to hide navbar on scroll
   useEffect(() => {
     const handleScroll = () => {
       setHideNavbar(window.scrollY > 50);
@@ -35,14 +34,15 @@ const Navbar: React.FC = () => {
     };
   }, []);
 
-  const handleNavigate = (path: string) => {
+  const handleNavigate = (path: string): void => {
     navigate(path);
+    setSidebar(false); // Close the sidebar before navigating
   };
 
   return (
     <>
       <nav
-        className={`navbar top-0 left-0 w-full flex items-center justify-between p-4 bg-black z-50 transition-opacity duration-300 ease-in-out ${
+        className={`navbar top-0 left-0 w-full flex items-center justify-between pl-4 pr-4 pb-2 bg-black z-50 transition-opacity duration-300 ease-in-out ${
           hideNavbar ? "opacity-0 pointer-events-none" : "opacity-100"
         }`}
       >
@@ -52,13 +52,13 @@ const Navbar: React.FC = () => {
             <div className="flex items-center space-x-4">
               <MdMenu
                 className="text-4xl cursor-pointer"
-                onClick={toggleSidebar}
+                onClick={toggleSidebar} // Toggle sidebar on click
               />
               <FaSearch className="text-2xl" />
             </div>
 
             <img
-              onClick={() => handleNavigate("/")}
+              onClick={() => handleNavigate("/")} // Navigate to home on click
               src={logo}
               alt="BlackWilbur"
               className="h-18 w-40 mx-auto text-white"
@@ -66,23 +66,23 @@ const Navbar: React.FC = () => {
             />
             <div className="flex items-center space-x-4">
               <FaCircleUser
-                onClick={() => handleNavigate("/Login")}
+                onClick={() => handleNavigate("/Login")} // Navigate to login
                 className="text-2xl cursor-pointer"
               />
               <FaShoppingCart
-                onClick={toggleCartSidebar}
+                onClick={toggleCartSidebar} // Toggle cart sidebar on click
                 className="text-2xl cursor-pointer"
               />
             </div>
           </div>
+
           {/* Mini Navbar */}
           <div className="hidden h-8 md:flex items-center justify-center w-full pl-16 pr-10 space-x-4 text-white">
-            {/* Buttons that use navigate */}
             {["Collection", "Oversize", "Round Neck", "Polo", "Knitted"].map(
               (item) => (
                 <button
                   key={item}
-                  onClick={() => handleNavigate("/collection")}
+                  onClick={() => handleNavigate("/collection")} // Navigate to collection
                   className="relative text-sm font-semibold px-4 py-2 after:content-[''] after:absolute after:left-0 after:bottom-0 after:w-full after:h-0.5 after:bg-white after:transform after:scale-x-0 after:origin-right hover:after:scale-x-100 hover:after:origin-left after:transition-transform after:duration-300"
                 >
                   {item}
@@ -94,7 +94,6 @@ const Navbar: React.FC = () => {
 
         {/* For Medium and Small Screens */}
         <div className="flex md:hidden items-center justify-between w-full h-12 p-2 text-white">
-          {/* Reduced height and padding */}
           <img
             src={logo}
             alt="BlackWilbur"
@@ -104,23 +103,23 @@ const Navbar: React.FC = () => {
           <div className="flex items-center space-x-4">
             <FaSearch className="text-xl" />
             <FaShoppingCart
-              onClick={toggleCartSidebar}
+              onClick={toggleCartSidebar} // Toggle cart sidebar on click
               className="text-xl cursor-pointer"
             />
             <FaCircleUser
-              onClick={() => handleNavigate("/Login")}
+              onClick={() => handleNavigate("/Login")} // Navigate to login
               className="text-xl cursor-pointer"
             />
             <MdMenu
               className="text-2xl cursor-pointer pr-2"
-              onClick={toggleSidebar}
+              onClick={toggleSidebar} // Toggle sidebar on click
             />
           </div>
         </div>
       </nav>
 
       {/* Sidebar component */}
-      <Sidebar isOpen={sidebar} onClose={toggleSidebar} />
+      <Sidebar isOpen={sidebar} onClose={() => setSidebar(false)} />
 
       {/* Add to Cart Sidebar */}
       <div className="text-black">

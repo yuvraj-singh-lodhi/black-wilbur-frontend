@@ -37,7 +37,10 @@ const Home: React.FC = () => {
             </h1>
           </div>
           <div className="absolute bottom-4 right-4 sm:bottom-10 sm:right-10">
-            <button className="px-4 py-2 sm:px-6 sm:py-3 bg-black text-white rounded-full hover:bg-white hover:text-black transition">
+            <button
+              className="px-4 py-2 sm:px-6 sm:py-3 bg-black text-white rounded-full hover:bg-white hover:text-black transition"
+              onClick={() => handleNavigate("/collection")}
+            >
               Shop Now
             </button>
           </div>
