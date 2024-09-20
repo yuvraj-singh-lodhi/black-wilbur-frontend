@@ -8,7 +8,7 @@ import AddToCartSidebar from "./addtocartsidebar";
 const sampleProduct = {
   name: "Black T-Shirt",
   price: "₹999",
-  description: `This black T-shirt is made from high-quality cotton and offers superior comfort for everyday wear. 
+  description: `This black T-shirt is made from high-quality cotton and offers superior comfort for everyday wear.
   Its minimalistic design makes it easy to pair with any casual outfit.`,
   sizes: ["S", "M", "L", "XL"],
   rating: 4.5,
@@ -39,29 +39,16 @@ const Product: React.FC = () => {
       <div className="w-full">
         <section className="w-full flex flex-col lg:flex-row gap-10">
           {/* Image Section */}
-          <div
-            className="w-full lg:w-1/2 flex flex-col bg-slate-50 overflow-y-auto"
-            style={{ maxHeight: "750px" }}
-          >
-            <div
-              className="relative flex flex-col items-center"
-              style={{
-                width: "100%",
-                height: "100%",
-              }}
-            >
+
+          <div className="w-full md:h-[85vh] sm:h-[85vh] lg:h-[750px] lg:w-1/2 flex lg:flex-col flex-row bg-slate-50 overflow-x-auto md:overflow-x-auto">
+            <div className="relative flex lg:flex-col flex-row items-center w-[100%] h-full">
               {product.images.map((image, index) => (
                 <div
                   key={index}
-                  className="flex items-center justify-center bg-[#7A7A7A]"
-                  style={{
-                    width: "100%",
-                    height: "auto",
-                    margin: "0",
-                  }}
+                  className="flex-shrink-0 flex items-center justify-center bg-[#7A7A7A] w-full h-full"
                 >
                   <img
-                    className="w-full h-auto object-cover"
+                    className="w-full h-full object-cover"
                     src={image}
                     alt={`Product Image ${index + 1}`}
                   />
