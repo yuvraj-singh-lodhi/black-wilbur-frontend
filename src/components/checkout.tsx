@@ -1,32 +1,39 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
-import tshirt from "../assets/blackT.png";
+import { useCart } from "../contexts/CartContext"; // Import CartContext
+import { useSingleProduct } from "../contexts/SingleProductContext"; // Import SingleProductContext
 
+// Define FormValues type
 interface FormValues {
   firstName: string;
   lastName: string;
   email: string;
   address: string;
-  apartment: string;
+  apartment?: string;
   city: string;
   state: string;
   pinCode: string;
   phone: string;
-  shippingMethod: string;
+  shippingMethod?: string;
   paymentMethod: string;
-  saveInfo: boolean;
+  saveInfo?: boolean;
   emailOffers?: boolean;
 }
 
 const Checkout: React.FC = () => {
   const { register, handleSubmit, formState: { errors } } = useForm<FormValues>();
   const navigate = useNavigate();
+  const { cartItems } = useCart(); // Access cart items
+  const { singleProduct } = useSingleProduct(); // Access single product context
 
   const onSubmit = (data: FormValues) => {
     console.log("Submitted data:", data);
     navigate('/payment');
   };
+
+  // Calculate the subtotal from cart items
+  const subtotal = cartItems.reduce((acc, item) => acc + item.quantity * item.product.price, 0);
 
   return (
     <div className="bg-black text-white min-h-screen flex flex-col font-montserrat">
@@ -36,6 +43,7 @@ const Checkout: React.FC = () => {
           {/* Left side - Billing Details */}
           <div className="w-full lg:w-1/2 lg:pr-8 border-b lg:border-b-0 lg:border-r border-gray-300">
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+              {/* Billing Details Form Here */}
               <div className="flex flex-col space-y-4">
                 <div className="flex flex-col sm:flex-row justify-between space-y-4 sm:space-y-0">
                   <div className="w-full sm:w-1/2">
@@ -167,17 +175,30 @@ const Checkout: React.FC = () => {
           <div className="w-full lg:w-1/2 lg:pl-8 mt-6 lg:mt-0">
             <h3 className="text-xl font-bold mb-4">Order Summary</h3>
             <div className="bg-gray-100 p-4 rounded-lg">
-              <div className="flex items-center mb-4">
-                <img src={tshirt} alt="Product" className="w-24 h-24 object-cover rounded-md" />
-                <div className="ml-4">
-                  <p className="font-bold">Black T-shirt</p>
-                  <p className="text-sm">Size: XS</p>
-                  <p className="text-sm">1 x ₹12,000.00</p>
+              {singleProduct ? (
+                <div className="flex items-center mb-4">
+                  <img src={singleProduct.images?.[0]?.image || `/api/placeholder/400/320`} alt={singleProduct.name} className="w-24 h-24 object-cover rounded-md" />
+                  <div className="ml-4">
+                    <p className="font-bold">{singleProduct.name}</p>
+                    <p className="text-sm">Size: {singleProduct.size}</p>
+                    <p className="text-sm">1 x ₹{singleProduct.price.toLocaleString('en-IN')}</p>
+                  </div>
                 </div>
-              </div>
+              ) : (
+                cartItems.map((item) => (
+                  <div key={item.product.id} className="flex items-center mb-4">
+                    <img src={`/api/placeholder/400/320`} alt={item.product.name} className="w-24 h-24 object-cover rounded-md" />
+                    <div className="ml-4">
+                      <p className="font-bold">{item.product.name}</p>
+                      <p className="text-sm">Size: {item.size}</p>
+                      <p className="text-sm">{item.quantity} x ₹{item.product.price.toLocaleString('en-IN')}</p>
+                    </div>
+                  </div>
+                ))
+              )}
               <div className="flex justify-between mb-4">
-                <span>Subtotal (1 item)</span>
-                <span>₹12,000.00</span>
+                <span>Subtotal ({singleProduct ? 1 : cartItems.length} item{cartItems.length > 1 ? 's' : ''})</span>
+                <span>₹{singleProduct ? singleProduct.price.toLocaleString('en-IN') : subtotal.toLocaleString('en-IN')}</span>
               </div>
               <div className="flex justify-between mb-4">
                 <span>Shipping</span>
@@ -185,7 +206,7 @@ const Checkout: React.FC = () => {
               </div>
               <div className="flex justify-between font-bold">
                 <span>Total</span>
-                <span>₹12,000.00</span>
+                <span>₹{singleProduct ? singleProduct.price.toLocaleString('en-IN') : subtotal.toLocaleString('en-IN')}</span>
               </div>
             </div>
           </div>
