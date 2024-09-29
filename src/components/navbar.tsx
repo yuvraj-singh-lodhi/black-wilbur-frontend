@@ -36,7 +36,7 @@ const Navbar: React.FC = (): JSX.Element => {
 
   const handleNavigate = (path: string): void => {
     navigate(path);
-    setSidebar(false); // Close the sidebar before navigating
+    setSidebar(false);
   };
 
   return (
@@ -52,25 +52,25 @@ const Navbar: React.FC = (): JSX.Element => {
             <div className="flex items-center space-x-4">
               <MdMenu
                 className="text-4xl cursor-pointer"
-                onClick={toggleSidebar} // Toggle sidebar on click
+                onClick={toggleSidebar}
               />
               <FaSearch className="text-2xl" />
             </div>
 
             <img
-              onClick={() => handleNavigate("/")} // Navigate to home on click
+              onClick={() => handleNavigate("/")}
               src={logo}
               alt="BlackWilbur"
-              className="h-18 w-40 mx-auto text-white"
-              style={{ filter: "invert(1)" }} // Inverts the colors
+              className="h-18 w-40 mx-auto text-white cursor-pointer"
+              style={{ filter: "invert(1)" }}
             />
             <div className="flex items-center space-x-4">
               <FaCircleUser
-                onClick={() => handleNavigate("/Login")} // Navigate to login
+                onClick={() => handleNavigate("/Login")}
                 className="text-2xl cursor-pointer"
               />
               <FaShoppingCart
-                onClick={toggleCartSidebar} // Toggle cart sidebar on click
+                onClick={toggleCartSidebar}
                 className="text-2xl cursor-pointer"
               />
             </div>
@@ -82,7 +82,7 @@ const Navbar: React.FC = (): JSX.Element => {
               (item) => (
                 <button
                   key={item}
-                  onClick={() => handleNavigate("/collection")} // Navigate to collection
+                  onClick={() => handleNavigate("/collection")}
                   className="relative text-sm font-semibold px-4 py-2 after:content-[''] after:absolute after:left-0 after:bottom-0 after:w-full after:h-0.5 after:bg-white after:transform after:scale-x-0 after:origin-right hover:after:scale-x-100 hover:after:origin-left after:transition-transform after:duration-300"
                 >
                   {item}
@@ -97,22 +97,23 @@ const Navbar: React.FC = (): JSX.Element => {
           <img
             src={logo}
             alt="BlackWilbur"
-            className="h-6"
-            style={{ filter: "invert(1)" }} // Inverts the colors
+            className="h-6 cursor-pointer"
+            style={{ filter: "invert(1)" }}
+            onClick={() => handleNavigate("/")}
           />
           <div className="flex items-center space-x-4">
             <FaSearch className="text-xl" />
             <FaShoppingCart
-              onClick={toggleCartSidebar} // Toggle cart sidebar on click
+              onClick={toggleCartSidebar}
               className="text-xl cursor-pointer"
             />
             <FaCircleUser
-              onClick={() => handleNavigate("/Login")} // Navigate to login
+              onClick={() => handleNavigate("/Login")}
               className="text-xl cursor-pointer"
             />
             <MdMenu
               className="text-2xl cursor-pointer pr-2"
-              onClick={toggleSidebar} // Toggle sidebar on click
+              onClick={toggleSidebar}
             />
           </div>
         </div>
@@ -123,7 +124,10 @@ const Navbar: React.FC = (): JSX.Element => {
 
       {/* Add to Cart Sidebar */}
       <div className="text-black">
-        <AddToCartSidebar isOpen={isCartOpen} onClose={toggleCartSidebar} />
+        <AddToCartSidebar 
+          isOpen={isCartOpen} 
+          onClose={toggleCartSidebar}
+        />
       </div>
     </>
   );
