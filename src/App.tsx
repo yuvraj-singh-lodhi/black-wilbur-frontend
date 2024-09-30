@@ -18,7 +18,8 @@ import { CartProvider } from './contexts/CartContext';
 import { OrderProvider } from './contexts/OrderContext';
 import { CheckoutProvider } from './contexts/CheckoutContext';
 import { UIProvider } from './contexts/UIContext';
-import { SingleProductProvider } from './contexts/SingleProductContext'; // Import SingleProductProvider
+import { SingleProductProvider } from './contexts/SingleProductContext';
+import { CategoryProvider } from './contexts/CategoryContext'; 
 
 function App() {
   return (
@@ -28,11 +29,11 @@ function App() {
           <OrderProvider>
             <CheckoutProvider>
               <UIProvider>
-                <SingleProductProvider> {/* Wrap with SingleProductProvider */}
-                  <Router>
-                    <div>
-                      <Navbar />
+                <SingleProductProvider>
+                  <CategoryProvider> 
+                    <Router>
                       <ScrollToTop />
+                      <Navbar />
                       <Routes>
                         <Route path="/" element={<Home />} />
                         <Route path="/collection" element={<Collection />} />
@@ -46,9 +47,9 @@ function App() {
                         <Route path="/ViewAddresses" element={<ViewAddresses />} />
                       </Routes>
                       <Footer />
-                    </div>
-                  </Router>
-                </SingleProductProvider> {/* Close SingleProductProvider */}
+                    </Router>
+                  </CategoryProvider>
+                </SingleProductProvider>
               </UIProvider>
             </CheckoutProvider>
           </OrderProvider>

@@ -4,6 +4,7 @@ import { MdClose, MdFacebook } from "react-icons/md";
 import { BsTwitterX } from "react-icons/bs";
 import { FaInstagram } from "react-icons/fa";
 
+// Define SidebarProps interface here
 interface SidebarProps {
   isOpen: boolean;
   onClose: () => void;
@@ -76,7 +77,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
             <h2 className="text-xl font-semibold mb-4">Enter Your Details</h2>
             <form className="text-black">
               <div className="mb-4">
-                <label className="block  mb-2">Email</label>
+                <label className="block mb-2">Email</label>
                 <input
                   type="email"
                   className="w-full px-3 py-2 border border-gray-600 rounded bg-transparent text-white"
