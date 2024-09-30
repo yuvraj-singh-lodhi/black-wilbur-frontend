@@ -8,14 +8,16 @@ import { useCart } from "../contexts/CartContext";
 import { UIContext } from "../contexts/UIContext";
 import { Product } from "../types";
 import SizeSelectionModal from "../components/SizeSelectionModal"; // Import the modal
+import { useSingleProduct } from "../contexts/SingleProductContext";
 
 const Home: React.FC = () => {
   const { products, fetchProducts, loading } = useContext(ProductContext)!;
   const { addToCart } = useCart();
   const { setNotification } = useContext(UIContext)!;
+  const { setSingleProduct } = useSingleProduct(); // Use SingleProductContext
   const navigate = useNavigate();
   const productRef = useRef<HTMLDivElement | null>(null);
-  
+
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null); // Store the selected product for the modal
 
@@ -40,14 +42,24 @@ const Home: React.FC = () => {
   };
 
   const handleAddToCart = (product: Product) => {
+    setSingleProduct(selectedProduct); // Set the selected product in context
     setSelectedProduct(product); // Set the selected product
     setModalOpen(true); // Open the modal
   };
 
   const handleConfirmAddToCart = (size: string) => {
     if (selectedProduct) {
+      setSingleProduct(selectedProduct); // Set the selected product in context
       addToCart(selectedProduct, 1, size); // Pass the selected size to the addToCart function
       setNotification({ type: "success", message: "Product added to cart." });
+    }
+  };
+  const handleConfirmBuyNow = (size: string) => {
+    if (selectedProduct) {
+      console.log(selectedProduct)
+      setSingleProduct(selectedProduct); // Set the selected product in context
+      addToCart(selectedProduct, 1, size); // Add to cart with selected size
+      navigate("/checkout"); // Navigate to Checkout
     }
   };
 
@@ -62,7 +74,9 @@ const Home: React.FC = () => {
         isOpen={modalOpen}
         onClose={() => setModalOpen(false)}
         onAddToCart={handleConfirmAddToCart}
+        onConfirmBuyNow={handleConfirmBuyNow} // Ensure to pass the buy now handler
         productName={selectedProduct ? selectedProduct.name : ""}
+        productId={selectedProduct ? selectedProduct.id : -1} // Ensure productId is correctly passed
       />
 
       {/* Carousel Section */}
@@ -96,7 +110,9 @@ const Home: React.FC = () => {
               style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
             >
               {products.map((product) => {
-                const productImage = product.images[0]; // Assuming 'images' is an array of ProductImage
+                const productImage =
+                  product.images.length > 0 ? product.images[0] : null; // Get the first image
+                console.log(productImage);
                 return (
                   <div
                     key={product.id}
@@ -106,7 +122,7 @@ const Home: React.FC = () => {
                     <img
                       className="w-full h-full object-cover transition-transform duration-300 ease-in-out transform hover:scale-110"
                       onClick={() => handleNavigate(`/Product/${product.id}`)}
-                      src={productImage ? productImage.image : ""} // Ensure image URL is passed
+                      src={productImage} // Fallback to a default image if none
                       alt={product.name}
                     />
                     <div className="absolute bottom-4 left-4 text-[#282828] text-lg font-semibold">
@@ -172,7 +188,7 @@ const Home: React.FC = () => {
                   <img
                     className="w-full h-full object-cover transition-transform duration-300 ease-in-out transform hover:scale-110"
                     onClick={() => handleNavigate(`/Product/${product.id}`)}
-                    src={productImage ? productImage.image : ""} // Ensure image URL is passed
+                    src={productImage ? productImage : ""} // Ensure image URL is passed
                     alt={product.name}
                   />
                   <div className="absolute bottom-4 left-4 text-[#282828] text-lg font-semibold">
@@ -231,7 +247,7 @@ const Home: React.FC = () => {
             </h2>
             <button
               className="px-6 py-3 bg-white text-black rounded-full hover:bg-gray-200 transition"
-              onClick={() => handleNavigate("/about")}
+              onClick={() => handleNavigate("/AboutUs")}
             >
               Learn More
             </button>

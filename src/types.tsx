@@ -23,9 +23,10 @@ export interface Product {
   stock: number;
   category: Category;
   images: ProductImage[]; // Add support for multiple images
-  size: string;
+  sizes: string[]; // Add this field for sizes
   created_at: string;
   updated_at: string;
+  availability:boolean
 }
 
 export interface User {

@@ -177,7 +177,7 @@ const Checkout: React.FC = () => {
             <div className="bg-gray-100 p-4 rounded-lg">
               {singleProduct ? (
                 <div className="flex items-center mb-4">
-                  <img src={singleProduct.images?.[0]?.image || `/api/placeholder/400/320`} alt={singleProduct.name} className="w-24 h-24 object-cover rounded-md" />
+                  <img src={singleProduct.images} alt={singleProduct.name} className="w-24 h-24 object-cover rounded-md" />
                   <div className="ml-4">
                     <p className="font-bold">{singleProduct.name}</p>
                     <p className="text-sm">Size: {singleProduct.size}</p>

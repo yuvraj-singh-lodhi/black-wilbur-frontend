@@ -1,20 +1,28 @@
-// src/components/SizeSelectionModal.tsx
 import React from "react";
+import { useProducts } from "../contexts/ProductContext"; // Adjust the import path based on your structure
 
 interface SizeSelectionModalProps {
   isOpen: boolean;
   onClose: () => void;
   onAddToCart: (size: string) => void;
+  onConfirmBuyNow: (size: string) => void; // New prop for Buy Now
   productName: string;
+  productId: number; // Pass productId to identify the product
 }
 
 const SizeSelectionModal: React.FC<SizeSelectionModalProps> = ({
   isOpen,
   onClose,
   onAddToCart,
+  onConfirmBuyNow, // Destructure the new prop
   productName,
+  productId,
 }) => {
+  const { products } = useProducts();
   const [selectedSize, setSelectedSize] = React.useState<string>("");
+
+  // Find the product by ID to get its available size
+  const product = products.find((product) => product.id === productId);
 
   const handleAddToCart = () => {
     if (selectedSize) {
@@ -23,7 +31,17 @@ const SizeSelectionModal: React.FC<SizeSelectionModalProps> = ({
     }
   };
 
-  if (!isOpen) return null; // Do not render anything if the modal is not open
+  const handleBuyNow = () => {
+    if (selectedSize) {
+      onConfirmBuyNow(selectedSize); // Use the Buy Now function
+      onClose(); // Close the modal after confirming Buy Now
+    }
+  };
+
+  if (!isOpen || !product) return null; // Do not render anything if the modal is not open or product is not found
+
+  // Create a size options array from the product's size
+  const sizeOptions = product.size ? [product.size] : [];
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50">
@@ -35,10 +53,9 @@ const SizeSelectionModal: React.FC<SizeSelectionModalProps> = ({
           onChange={(e) => setSelectedSize(e.target.value)}
         >
           <option value="">Select Size</option>
-          <option value="S">S</option>
-          <option value="M">M</option>
-          <option value="L">L</option>
-          <option value="XL">XL</option>
+          {sizeOptions.map((size) => (
+            <option key={size} value={size}>{size}</option>
+          ))}
         </select>
         <div className="flex justify-between">
           <button
@@ -52,6 +69,12 @@ const SizeSelectionModal: React.FC<SizeSelectionModalProps> = ({
             onClick={handleAddToCart}
           >
             Add to Cart
+          </button>
+          <button
+            className="bg-green-600 text-white rounded px-4 py-2 hover:bg-green-700 transition"
+            onClick={handleBuyNow} // Call the handleBuyNow function
+          >
+            Buy Now
           </button>
         </div>
       </div>

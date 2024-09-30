@@ -3,10 +3,10 @@ import { IoIosStar } from "react-icons/io";
 import { useParams, useNavigate } from "react-router-dom";
 import AddToCartSidebar from "./addtocartsidebar";
 import SizeSelectionModal from "./SizeSelectionModal";
-import { fetchProductById, fetchProducts } from "../services/api";
 import { Product as ProductType } from "../types";
 import { useCart } from "../contexts/CartContext";
 import { useSingleProduct } from "../contexts/SingleProductContext"; // Import your SingleProductContext
+import { useProducts } from "../contexts/ProductContext"; // Import your ProductContext
 
 const Product: React.FC = () => {
   const [isCartOpen, setIsCartOpen] = useState(false);
@@ -14,10 +14,11 @@ const Product: React.FC = () => {
   const [relatedProducts, setRelatedProducts] = useState<ProductType[]>([]);
   const { id } = useParams<{ id: string }>();
   const { addToCart } = useCart();
-  const navigate = useNavigate();
-  
+  const navigate = useNavigate(); // Initialize the navigate function
+
   const [modalOpen, setModalOpen] = useState(false);
   const { setSingleProduct } = useSingleProduct(); // Use SingleProductContext
+  const { products } = useProducts(); // Get products from ProductContext
 
   const toggleCart = () => {
     setIsCartOpen(!isCartOpen);
@@ -36,29 +37,31 @@ const Product: React.FC = () => {
   };
 
   const handleBuyNow = () => {
+    setModalOpen(true); // Open size selection modal for size selection
+  };
+
+  const handleConfirmBuyNow = (size: string) => {
     if (product) {
       setSingleProduct(product); // Set the selected product in context
+      addToCart(product, 1, size); // Add to cart with selected size
       navigate("/checkout"); // Navigate to Checkout
     }
   };
 
-  useEffect(() => {
-    const fetchProductData = async () => {
-      try {
-        if (id) {
-          const productData = await fetchProductById(Number(id));
-          setProduct(productData);
-          const allProducts = await fetchProducts();
-          const filtered = allProducts.filter(p => p.id !== productData.id).slice(0, 3);
-          setRelatedProducts(filtered);
-        }
-      } catch (error) {
-        console.error("Error fetching product data", error);
-      }
-    };
+  const handleRelatedProductClick = (relatedProductId: number) => {
+    navigate(`/product/${relatedProductId}`); // Navigate to the product detail page with the related product ID
+  };
 
-    fetchProductData();
-  }, [id]);
+  useEffect(() => {
+    if (id) {
+      const foundProduct = products.find((p) => p.id === Number(id)); // Find the product in context
+      if (foundProduct) {
+        setProduct(foundProduct);
+        const filtered = products.filter((p) => p.id !== foundProduct.id).slice(0, 3);
+        setRelatedProducts(filtered); // Set related products
+      }
+    }
+  }, [id, products]);
 
   if (!product) {
     return <div>Loading...</div>;
@@ -71,14 +74,19 @@ const Product: React.FC = () => {
         <section className="w-full flex flex-col lg:flex-row gap-10">
           {/* Image Section */}
           <div className="w-full md:h-[85vh] sm:h-[85vh] lg:h-[750px] lg:w-1/2 flex lg:flex-col flex-row bg-slate-50 overflow-x-auto md:overflow-x-auto">
-            <div className="relative flex lg:flex-col flex-row items-center w-[100%] h-full">
-              <div className="flex-shrink-0 flex items-center justify-center bg-[#7A7A7A] w-full h-full">
-                <img
-                  className="w-full h-full object-cover"
-                  src={product.images?.[0]?.image || `/api/placeholder/400/320`}
-                  alt={`Product Image ${product.name}`}
-                />
-              </div>
+            <div className="flex lg:flex-col flex-row items-center w-full h-full overflow-x-scroll">
+              {product.images.map((image, index) => (
+                <div
+                  key={index}
+                  className="flex-shrink-0 flex items-center justify-center bg-[#7A7A7A] w-full h-full min-w-[300px] md:min-w-[400px]"
+                >
+                  <img
+                    className="w-full h-full object-cover"
+                    src={image} // Use the image from the array
+                    alt={`Product Image ${product.name}`}
+                  />
+                </div>
+              ))}
             </div>
           </div>
 
@@ -105,7 +113,7 @@ const Product: React.FC = () => {
                 ADD TO CART
               </button>
               <button
-                onClick={handleBuyNow} // Use the new handleBuyNow function
+                onClick={handleBuyNow} // Open size selection modal
                 className="px-4 py-2 bg-white text-black rounded-full"
               >
                 BUY NOW!
@@ -129,12 +137,13 @@ const Product: React.FC = () => {
               relatedProducts.map((relatedProduct) => (
                 <div
                   key={relatedProduct.id}
-                  className="relative bg-[#7A7A7A] rounded-sm overflow-hidden"
+                  className="relative bg-[#7A7A7A] rounded-sm overflow-hidden cursor-pointer"
                   style={{ width: "100%", height: "auto" }}
+                  onClick={() => handleRelatedProductClick(relatedProduct.id)} // Add click handler
                 >
                   <img
                     className="w-full h-auto object-cover"
-                    src={relatedProduct.images?.[0]?.image || `/api/placeholder/400/320`}
+                    src={relatedProduct.images[0]} // Assuming images is an array
                     alt={`Visit More ${relatedProduct.name}`}
                   />
                   <div className="p-2">
@@ -155,7 +164,9 @@ const Product: React.FC = () => {
         isOpen={modalOpen}
         onClose={() => setModalOpen(false)}
         onAddToCart={handleConfirmAddToCart}
+        onConfirmBuyNow={handleConfirmBuyNow} // Add this prop
         productName={product ? product.name : ""}
+        productId={product ? product.id : 0} // Make sure product.id is defined
       />
 
       <div className="text-black">

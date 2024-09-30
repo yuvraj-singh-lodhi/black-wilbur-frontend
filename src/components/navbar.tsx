@@ -1,16 +1,18 @@
 import React, { useState, useEffect } from "react";
 import { MdMenu } from "react-icons/md";
-import { FaSearch, FaShoppingCart } from "react-icons/fa";
+import { FaShoppingCart } from "react-icons/fa";
 import { FaCircleUser } from "react-icons/fa6";
 import { useNavigate } from "react-router-dom";
 import logo from "../assets/navlogo.svg";
 import Sidebar from "./sidebar";
 import AddToCartSidebar from "./addtocartsidebar";
+import SearchBar from "./SearchBar"; // Import the SearchBar component
 
 const Navbar: React.FC = (): JSX.Element => {
   const [sidebar, setSidebar] = useState<boolean>(false);
   const [hideNavbar, setHideNavbar] = useState<boolean>(false);
   const [isCartOpen, setIsCartOpen] = useState<boolean>(false);
+  const [showSearchBar, setShowSearchBar] = useState<boolean>(false); 
 
   const navigate = useNavigate();
 
@@ -39,6 +41,10 @@ const Navbar: React.FC = (): JSX.Element => {
     setSidebar(false);
   };
 
+  const handleSearchIconClick = () => {
+    setShowSearchBar(!showSearchBar); 
+  };
+
   return (
     <>
       <nav
@@ -54,7 +60,10 @@ const Navbar: React.FC = (): JSX.Element => {
                 className="text-4xl cursor-pointer"
                 onClick={toggleSidebar}
               />
-              <FaSearch className="text-2xl" />
+              {/* Render SearchBar directly */}
+              <div className=" left-32 absolute">
+                  <SearchBar />
+                </div>
             </div>
 
             <img
@@ -102,7 +111,9 @@ const Navbar: React.FC = (): JSX.Element => {
             onClick={() => handleNavigate("/")}
           />
           <div className="flex items-center space-x-4">
-            <FaSearch className="text-xl" />
+            <button onClick={handleSearchIconClick} className="text-xl">
+              Search
+            </button>
             <FaShoppingCart
               onClick={toggleCartSidebar}
               className="text-xl cursor-pointer"
@@ -126,7 +137,7 @@ const Navbar: React.FC = (): JSX.Element => {
       <div className="text-black">
         <AddToCartSidebar 
           isOpen={isCartOpen} 
-          onClose={toggleCartSidebar}
+          onClose={toggleCartSidebar} 
         />
       </div>
     </>

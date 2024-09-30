@@ -46,7 +46,7 @@ const AddToCartSidebar: React.FC<AddToCartSidebarProps> = ({ isOpen, onClose }) 
             cartItems.map((item) => (
               <div key={item.id} className="flex items-center mb-4">
                 <img
-                  src={`/api/placeholder/400/320`}
+                  src={item.product.images}
                   alt={item.product.name}
                   className="w-16 h-16 object-cover rounded-md"
                 />
