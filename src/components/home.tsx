@@ -56,7 +56,7 @@ const Home: React.FC = () => {
   };
   const handleConfirmBuyNow = (size: string) => {
     if (selectedProduct) {
-      console.log(selectedProduct)
+      console.log(selectedProduct);
       setSingleProduct(selectedProduct); // Set the selected product in context
       addToCart(selectedProduct, 1, size); // Add to cart with selected size
       navigate("/checkout"); // Navigate to Checkout
@@ -176,19 +176,20 @@ const Home: React.FC = () => {
           <h2 className="text-4xl px-2 lg:text-5xl lg:px-16 font-normal font-montserrat uppercase leading-tight text-white mb-8 text-start">
             Explore Our Collections
           </h2>
-          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-1 px-2">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-0.5 px-2">
+            {" "}
             {products.map((product) => {
-              const productImage = product.images[0]; // Assuming 'images' is an array of ProductImage
+              const productImage = product.images[0];
               return (
                 <div
                   key={product.id}
-                  className="min-w-[300px] sm:min-w-[350px] lg:min-w-[400px] relative card bg-[#7A7A7A] overflow-hidden flex items-center justify-center snap-start"
+                  className="relative card bg-[#7A7A7A] overflow-hidden flex items-center justify-center"
                   style={{ height: "100vh" }}
                 >
                   <img
                     className="w-full h-full object-cover transition-transform duration-300 ease-in-out transform hover:scale-110"
                     onClick={() => handleNavigate(`/Product/${product.id}`)}
-                    src={productImage ? productImage : ""} // Ensure image URL is passed
+                    src={productImage ? productImage.image : ""}
                     alt={product.name}
                   />
                   <div className="absolute bottom-4 left-4 text-[#282828] text-lg font-semibold">
