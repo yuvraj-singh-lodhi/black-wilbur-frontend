@@ -15,7 +15,7 @@ const Home: React.FC = () => {
   const { setNotification } = useContext(UIContext)!;
   const navigate = useNavigate();
   const productRef = useRef<HTMLDivElement | null>(null);
-  
+
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null); // Store the selected product for the modal
 
@@ -155,14 +155,14 @@ const Home: React.FC = () => {
       </section>
 
       {/* Explore Our Collections Section */}
-      <section className="py-16 bg-[#1b1b1b] text-white">
+      {/* <section className="py-16 bg-[#1b1b1b] text-white">
         <div className="container mx-auto">
           <h2 className="text-4xl px-2 lg:text-5xl lg:px-16 font-normal font-montserrat uppercase leading-tight text-white mb-8 text-start">
             Explore Our Collections
           </h2>
           <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-1 px-2">
             {products.map((product) => {
-              const productImage = product.images[0]; // Assuming 'images' is an array of ProductImage
+              const productImage = product.images[0]; 
               return (
                 <div
                   key={product.id}
@@ -172,7 +172,57 @@ const Home: React.FC = () => {
                   <img
                     className="w-full h-full object-cover transition-transform duration-300 ease-in-out transform hover:scale-110"
                     onClick={() => handleNavigate(`/Product/${product.id}`)}
-                    src={productImage ? productImage.image : ""} // Ensure image URL is passed
+                    src={productImage ? productImage.image : ""} 
+                    alt={product.name}
+                  />
+                  <div className="absolute bottom-4 left-4 text-[#282828] text-lg font-semibold">
+                    {product.name.toUpperCase()}
+                  </div>
+                  <div className="absolute bottom-4 right-4 text-[#636363] text-lg font-semibold">
+                    {product.price} rs
+                  </div>
+                  <button
+                    onClick={() => handleAddToCart(product)}
+                    className="absolute top-4 left-4 text-white bg-black rounded-full p-2 hover:bg-gray-800 transition"
+                  >
+                    🛒
+                  </button>
+                </div>
+              );
+            })}
+          </div>
+
+          <div className="mt-12 flex justify-center">
+            <button
+              className="px-6 py-3 bg-black text-white rounded-full hover:bg-gray-800 transition"
+              onClick={() => handleNavigate("/collection")}
+            >
+              Shop Collections
+            </button>
+          </div>
+        </div>
+      </section>   */}
+
+      <section className="py-16 bg-[#1b1b1b] text-white">
+        <div className="container mx-auto">
+          <h2 className="text-4xl px-2 lg:text-5xl lg:px-16 font-normal font-montserrat uppercase leading-tight text-white mb-8 text-start">
+            Explore Our Collections
+          </h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-0.5 px-2">
+            {" "}
+            {/* Set gap to 0.5 for ~2px */}
+            {products.map((product) => {
+              const productImage = product.images[0];
+              return (
+                <div
+                  key={product.id}
+                  className="relative card bg-[#7A7A7A] overflow-hidden flex items-center justify-center"
+                  style={{ height: "100vh" }}
+                >
+                  <img
+                    className="w-full h-full object-cover transition-transform duration-300 ease-in-out transform hover:scale-110"
+                    onClick={() => handleNavigate(`/Product/${product.id}`)}
+                    src={productImage ? productImage.image : ""}
                     alt={product.name}
                   />
                   <div className="absolute bottom-4 left-4 text-[#282828] text-lg font-semibold">
