@@ -7,12 +7,15 @@ import logo from "../assets/navlogo.svg";
 import Sidebar from "./sidebar";
 import AddToCartSidebar from "./addtocartsidebar";
 import SearchBar from "./SearchBar"; // Import the SearchBar component
+import { useCart } from "../contexts/CartContext"; // Import useCart
 
 const Navbar: React.FC = (): JSX.Element => {
   const [sidebar, setSidebar] = useState<boolean>(false);
   const [hideNavbar, setHideNavbar] = useState<boolean>(false);
   const [isCartOpen, setIsCartOpen] = useState<boolean>(false);
   const [showSearchBar, setShowSearchBar] = useState<boolean>(false); 
+
+  const { cartItems } = useCart(); // Access cart items from the cart context
 
   const navigate = useNavigate();
 
@@ -63,7 +66,7 @@ const Navbar: React.FC = (): JSX.Element => {
               {/* Render SearchBar directly */}
               <div className=" left-32 absolute">
                   <SearchBar />
-                </div>
+              </div>
             </div>
 
             <img
@@ -73,15 +76,24 @@ const Navbar: React.FC = (): JSX.Element => {
               className="h-18 w-40 mx-auto text-white cursor-pointer"
               style={{ filter: "invert(1)" }}
             />
-            <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-4 relative">
               <FaCircleUser
                 onClick={() => handleNavigate("/Login")}
                 className="text-2xl cursor-pointer"
               />
-              <FaShoppingCart
-                onClick={toggleCartSidebar}
-                className="text-2xl cursor-pointer"
-              />
+              
+              {/* Cart Icon with badge */}
+              <div className="relative">
+                <FaShoppingCart
+                  onClick={toggleCartSidebar}
+                  className="text-2xl cursor-pointer"
+                />
+                {cartItems.length > 0 && (
+                  <span className="absolute -top-2 -right-2 bg-red-600 text-white rounded-full text-xs w-5 h-5 flex items-center justify-center">
+                    {cartItems.length}
+                  </span>
+                )}
+              </div>
             </div>
           </div>
 
@@ -114,10 +126,17 @@ const Navbar: React.FC = (): JSX.Element => {
             <button onClick={handleSearchIconClick} className="text-xl">
               Search
             </button>
-            <FaShoppingCart
-              onClick={toggleCartSidebar}
-              className="text-xl cursor-pointer"
-            />
+            <div className="relative">
+              <FaShoppingCart
+                onClick={toggleCartSidebar}
+                className="text-xl cursor-pointer"
+              />
+              {cartItems.length > 0 && (
+                <span className="absolute -top-2 -right-2 bg-red-600 text-white rounded-full text-xs w-5 h-5 flex items-center justify-center">
+                  {cartItems.length}
+                </span>
+              )}
+            </div>
             <FaCircleUser
               onClick={() => handleNavigate("/Login")}
               className="text-xl cursor-pointer"

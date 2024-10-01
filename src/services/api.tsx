@@ -25,7 +25,52 @@ import {
 // Define base API URL
 const API_BASE_URL = 'http://127.0.0.1:8000/api';
 
-// API functions
+// Set up axios for authentication
+const setAuthToken = (token: string | null) => {
+    if (token) {
+        axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+    } else {
+        delete axios.defaults.headers.common['Authorization'];
+    }
+};
+
+// Authentication API functions
+
+export const registerUser = async (userData: {
+    username: string;
+    password: string;
+    password2: string;
+    email: string;
+    first_name: string;
+    last_name: string;
+  }): Promise<{ access: string; refresh: string }> => {
+    const response = await axios.post<{ access: string; refresh: string }>(`${API_BASE_URL}/auth/register/`, userData);
+    return response.data;
+  };
+  
+
+  export const loginUser = async (credentials: { identifier: string; password: string }): Promise<{ token: string; user: User }> => {
+    // Send a POST request to the login endpoint with the identifier and password
+    const response = await axios.post<{ token: string; user: User }>(`${API_BASE_URL}/auth/login/`, credentials);
+    
+    // Set the auth token for future requests
+    setAuthToken(response.data.token);
+    
+    return response.data;
+  };
+// 3. User Logout
+export const logoutUser = async (): Promise<void> => {
+    await axios.post(`${API_BASE_URL}/logout/`);
+    setAuthToken(null); // Clear token
+};
+
+// 4. Fetch Current User
+export const fetchCurrentUser = async (): Promise<User> => {
+    const response = await axios.get<User>(`${API_BASE_URL}/user/`);
+    return response.data;
+};
+
+// Existing API functions...
 
 // 1. Categories
 export const fetchCategories = async (): Promise<Category[]> => {
@@ -40,8 +85,8 @@ export const fetchProducts = async (): Promise<Product[]> => {
 };
 // 2. Fetch a Product by ID
 export const fetchProductById = async (productId: number): Promise<Product> => {
-  const response = await axios.get<Product>(`${API_BASE_URL}/products/${productId}/`);
-  return response.data;
+    const response = await axios.get<Product>(`${API_BASE_URL}/products/${productId}/`);
+    return response.data;
 };
 
 export const createProduct = async (product: Omit<Product, 'id'>): Promise<Product> => {

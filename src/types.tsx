@@ -29,13 +29,19 @@ export interface Product {
   availability:boolean
 }
 
+// export interface UserDB {
+//   id: number;
+//   username: string;
+//   email: string;
+//   name: string;
+//   token: string;
+// }
 export interface User {
-  id: number;
   username: string;
-  email: string;
-  name: string;
-  token: string;
+  password: string;
+  password2?: string; // Optional for login scenarios (used only in registration for confirmation)
 }
+
 
 export interface Order {
   id: number;

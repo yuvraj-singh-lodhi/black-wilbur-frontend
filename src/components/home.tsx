@@ -56,7 +56,7 @@ const Home: React.FC = () => {
   };
   const handleConfirmBuyNow = (size: string) => {
     if (selectedProduct) {
-      console.log(selectedProduct)
+      console.log(selectedProduct);
       setSingleProduct(selectedProduct); // Set the selected product in context
       addToCart(selectedProduct, 1, size); // Add to cart with selected size
       navigate("/checkout"); // Navigate to Checkout
@@ -87,7 +87,37 @@ const Home: React.FC = () => {
           className="absolute inset-0 w-full h-full object-cover"
           style={{ objectPosition: "center top" }}
         />
-        {/* Carousel content omitted for brevity */}
+        <div className="hidden md:block">
+          <div className="absolute bottom-4 left-4 ml-9 sm:bottom-10 sm:left-10 text-white">
+            <h1 className="font-montserrat text-xl sm:text-2xl md:text-3xl lg:text-7xl font-semibold uppercase leading-tight z-10">
+              Unleash the
+              <br /> Power of Black
+            </h1>
+          </div>
+          <div className="absolute bottom-4 right-4 sm:bottom-10 sm:right-10">
+            <button
+              className="px-4 py-2 sm:px-6 sm:py-3 bg-black text-white rounded-full hover:bg-white hover:text-black transition"
+              onClick={() => handleNavigate("/collection")}
+            >
+              Shop Now
+            </button>
+          </div>
+        </div>
+        <div className="md:hidden">
+          <div className="absolute inset-0 flex flex-col justify-end items-center mb-9 lg:items-start lg:justify-end p-4 lg:p-10">
+            <div className="text-center lg:text-left mb-4">
+              <h1 className="font-montserrat text-xl sm:text-2xl md:text-3xl lg:text-4xl font-semibold uppercase leading-tight text-white">
+                Unleash the
+                <br /> Power of Black
+              </h1>
+            </div>
+            <div className="text-center lg:text-right">
+              <button className="px-4 py-2 sm:px-6 sm:py-3 bg-black text-white rounded-full hover:bg-white hover:text-black transition">
+                Shop Now
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
 
       {/* Best Sellers Section */}
