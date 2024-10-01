@@ -113,6 +113,7 @@ const Home: React.FC = () => {
                 const productImage =
                   product.images.length > 0 ? product.images[0] : null; // Get the first image
                 console.log(productImage);
+
                 return (
                   <div
                     key={product.id}
@@ -122,7 +123,7 @@ const Home: React.FC = () => {
                     <img
                       className="w-full h-full object-cover transition-transform duration-300 ease-in-out transform hover:scale-110"
                       onClick={() => handleNavigate(`/Product/${product.id}`)}
-                      src={productImage} // Fallback to a default image if none
+                      src={`${productImage}` ? `${productImage}` : undefined} // Fallback to a default image if none
                       alt={product.name}
                     />
                     <div className="absolute bottom-4 left-4 text-[#282828] text-lg font-semibold">
@@ -179,7 +180,8 @@ const Home: React.FC = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-0.5 px-2">
             {" "}
             {products.map((product) => {
-              const productImage = product.images[0];
+              const productImage =
+                product.images.length > 0 ? product.images[0] : null;
               return (
                 <div
                   key={product.id}
@@ -189,7 +191,7 @@ const Home: React.FC = () => {
                   <img
                     className="w-full h-full object-cover transition-transform duration-300 ease-in-out transform hover:scale-110"
                     onClick={() => handleNavigate(`/Product/${product.id}`)}
-                    src={productImage ? productImage.image : ""}
+                    src={`${productImage}` ? `${productImage}` : undefined}
                     alt={product.name}
                   />
                   <div className="absolute bottom-4 left-4 text-[#282828] text-lg font-semibold">
