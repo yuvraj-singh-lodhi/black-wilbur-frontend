@@ -130,7 +130,7 @@ const Collection: React.FC = () => {
                   <img
                     className="w-full h-full object-cover cursor-pointer"
                     src={product.images}
-                    onClick={() => handleNavigate("/Product")}
+                    onClick={() => handleNavigate(`/Product/${product.id}`)}
                     alt={product.name}
                   />
                   <div className="absolute bottom-2 left-2 text-[#282828] text-sm font-semibold">
