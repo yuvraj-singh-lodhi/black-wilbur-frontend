@@ -1,56 +1,53 @@
-import React, { useState, useEffect } from "react";
-
-// Define types for address management
-interface AccountDetails {
-  addresses: string[];
-}
-
-// Mock API to simulate fetching account details (addresses)
-const fetchAccountDetails = async (): Promise<AccountDetails> => {
-  return {
-    addresses: ["123 Street Name, City, India", "456 Avenue, Town, India"],
-  };
-};
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom"; // Import useNavigate
+import { useUserContext } from "../contexts/UserContext"; // Import the context
 
 const ViewAddresses: React.FC = () => {
-  const [addresses, setAddresses] = useState<string[]>([]);
+  const { user, setUser } = useUserContext(); // Get user and setUser from UserContext
   const [newAddress, setNewAddress] = useState<string>("");
+  const navigate = useNavigate(); // Initialize navigate
 
-  // Fetch existing addresses on component mount
-  useEffect(() => {
-    const fetchData = async () => {
-      const accountData = await fetchAccountDetails();
-      setAddresses(accountData.addresses);
-    };
-
-    fetchData();
-  }, []);
-
-  // Handle adding a new address
+  // Add a new address
   const handleAddAddress = () => {
-    if (newAddress.trim() !== "") {
-      setAddresses([...addresses, newAddress]);
-      setNewAddress(""); // Reset the input field after adding
+    if (newAddress.trim() !== "" && user) {
+      const updatedAddresses = [
+        ...user.addresses,
+        { address_line_1: newAddress },
+      ];
+      setUser({ ...user, addresses: updatedAddresses }); // Update the user context
+      setNewAddress("");
     }
   };
 
   // Handle deleting an address
   const handleDeleteAddress = (index: number) => {
-    const updatedAddresses = addresses.filter((_, i) => i !== index);
-    setAddresses(updatedAddresses);
+    if (user) {
+      const updatedAddresses = user.addresses.filter((_, i) => i !== index);
+      setUser({ ...user, addresses: updatedAddresses }); // Update the user context
+    }
   };
 
   // Handle editing an address
   const handleEditAddress = (index: number, updatedAddress: string) => {
-    const updatedAddresses = [...addresses];
-    updatedAddresses[index] = updatedAddress;
-    setAddresses(updatedAddresses);
+    if (user) {
+      const updatedAddresses = [...user.addresses];
+      updatedAddresses[index].address_line_1 = updatedAddress; // Update the address
+      setUser({ ...user, addresses: updatedAddresses }); // Update the user context
+    }
   };
 
   return (
     <div className="min-h-screen lg:pt-24 px-8 bg-white text-black font-montserrat">
       <div className="container mx-auto px-4 py-12">
-        <h1 className="text-4xl font-bold mb-6">Manage Addresses</h1>
+        <div className="flex justify-between items-center mb-6">
+          <h1 className="text-4xl font-bold">Manage Addresses</h1>
+          <button
+            className="px-4 py-2 border border-black rounded-full hover:bg-gray-200"
+            onClick={() => navigate(-1)} // Go back to the previous page
+          >
+            Back
+          </button>
+        </div>
 
         {/* Add New Address */}
         <div className="mb-6">
@@ -72,16 +69,15 @@ const ViewAddresses: React.FC = () => {
 
         {/* List of Addresses */}
         <h2 className="text-2xl font-semibold mb-4">Your Addresses</h2>
-        {addresses.length > 0 ? (
+        {user?.addresses.length > 0 ? (
           <ul>
-            {addresses.map((address, index) => (
+            {user.addresses.map((address, index) => (
               <li key={index} className="mb-4">
+                {/* Access individual fields of the address object */}
                 <input
                   type="text"
-                  value={address}
-                  onChange={(e) =>
-                    handleEditAddress(index, e.target.value)
-                  }
+                  value={address.address_line_1} // Display the specific field
+                  onChange={(e) => handleEditAddress(index, e.target.value)}
                   className="border px-4 py-2 w-full"
                 />
                 <button

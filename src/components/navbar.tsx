@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { MdMenu } from "react-icons/md";
 import { FaShoppingCart } from "react-icons/fa";
 import { FaCircleUser } from "react-icons/fa6";
@@ -6,17 +6,16 @@ import { useNavigate } from "react-router-dom";
 import logo from "../assets/navlogo.svg";
 import Sidebar from "./sidebar";
 import AddToCartSidebar from "./addtocartsidebar";
-import SearchBar from "./SearchBar"; // Import the SearchBar component
-import { useCart } from "../contexts/CartContext"; // Import useCart
+import SearchBar from "./SearchBar";
+import { useCart } from "../contexts/CartContext";
+import { useAuth } from "../contexts/AuthContext";
+import { logoutUser } from "../services/api";
 
 const Navbar: React.FC = (): JSX.Element => {
   const [sidebar, setSidebar] = useState<boolean>(false);
-  const [hideNavbar, setHideNavbar] = useState<boolean>(false);
   const [isCartOpen, setIsCartOpen] = useState<boolean>(false);
-  const [showSearchBar, setShowSearchBar] = useState<boolean>(false); 
-
   const { cartItems } = useCart(); // Access cart items from the cart context
-
+  const { userauth, setUser } = useAuth(); // Access user context
   const navigate = useNavigate();
 
   const toggleSidebar = (): void => {
@@ -27,45 +26,36 @@ const Navbar: React.FC = (): JSX.Element => {
     setIsCartOpen(!isCartOpen);
   };
 
-  useEffect(() => {
-    const handleScroll = () => {
-      setHideNavbar(window.scrollY > 50);
-    };
-
-    window.addEventListener("scroll", handleScroll);
-
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
-  }, []);
-
   const handleNavigate = (path: string): void => {
     navigate(path);
     setSidebar(false);
   };
 
-  const handleSearchIconClick = () => {
-    setShowSearchBar(!showSearchBar); 
+  const handleUserIconClick = () => {
+    if (userauth) {
+      navigate("/UserProfile"); // Redirect to user profile if logged in
+    } else {
+      handleNavigate("/Login"); // Redirect to login if not logged in
+    }
+  };
+
+  const handleLogout = () => {
+    logoutUser()
+    setUser(null); // Clear user from context
+    navigate("/Login"); // Redirect to login
   };
 
   return (
     <>
-      <nav
-        className={`navbar top-0 left-0 w-full flex items-center justify-between pl-4 pr-4 pb-2 bg-black z-50 transition-opacity duration-300 ease-in-out ${
-          hideNavbar ? "opacity-0 pointer-events-none" : "opacity-100"
-        }`}
-      >
+      <nav className="navbar top-0 left-0 w-full flex items-center justify-between pl-4 pr-4 pb-2 bg-black z-50">
         <div className="hidden md:flex h-24 flex-col w-full">
           {/* For Large Screens */}
           <div className="hidden h-20 md:flex items-center justify-between w-full pl-16 pr-16 text-white border-b-2 border-white">
             <div className="flex items-center space-x-4">
-              <MdMenu
-                className="text-4xl cursor-pointer"
-                onClick={toggleSidebar}
-              />
+              <MdMenu className="text-4xl cursor-pointer" onClick={toggleSidebar} />
               {/* Render SearchBar directly */}
-              <div className=" left-32 absolute">
-                  <SearchBar />
+              <div className="left-32 absolute">
+                <SearchBar />
               </div>
             </div>
 
@@ -76,12 +66,26 @@ const Navbar: React.FC = (): JSX.Element => {
               className="h-18 w-40 mx-auto text-white cursor-pointer"
               style={{ filter: "invert(1)" }}
             />
+
             <div className="flex items-center space-x-4 relative">
               <FaCircleUser
-                onClick={() => handleNavigate("/Login")}
+                onClick={handleUserIconClick}
                 className="text-2xl cursor-pointer"
               />
               
+              {/* Display user name and logout button if logged in */}
+              {userauth && (
+                <div className="flex items-center space-x-4">
+                 <span className="text-lg">{userauth.first_name}</span>
+                  <button
+                    onClick={handleLogout}
+                    className="bg-red-500 text-white px-4 py-2 rounded"
+                  >
+                    Logout
+                  </button>
+                </div>
+              )}
+
               {/* Cart Icon with badge */}
               <div className="relative">
                 <FaShoppingCart
@@ -123,9 +127,7 @@ const Navbar: React.FC = (): JSX.Element => {
             onClick={() => handleNavigate("/")}
           />
           <div className="flex items-center space-x-4">
-            <button onClick={handleSearchIconClick} className="text-xl">
-              Search
-            </button>
+            {/* Cart Icon with badge */}
             <div className="relative">
               <FaShoppingCart
                 onClick={toggleCartSidebar}
@@ -137,10 +139,26 @@ const Navbar: React.FC = (): JSX.Element => {
                 </span>
               )}
             </div>
-            <FaCircleUser
-              onClick={() => handleNavigate("/Login")}
-              className="text-xl cursor-pointer"
-            />
+
+            {/* User icon with name and logout (if logged in) */}
+            <div className="relative flex items-center space-x-2">
+              <FaCircleUser
+                onClick={handleUserIconClick}
+                className="text-xl cursor-pointer"
+              />
+              {userauth && (
+                <div className="flex items-center space-x-2">
+                  <span>{userauth.first_name}</span>
+                  <button
+                    onClick={handleLogout}
+                    className="bg-red-500 text-white px-2 py-1 rounded"
+                  >
+                    Logout
+                  </button>
+                </div>
+              )}
+            </div>
+
             <MdMenu
               className="text-2xl cursor-pointer pr-2"
               onClick={toggleSidebar}

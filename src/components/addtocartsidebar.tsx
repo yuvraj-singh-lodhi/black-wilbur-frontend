@@ -1,7 +1,10 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { MdClose } from 'react-icons/md';
 import { useCart } from "../contexts/CartContext";
-import { useNavigate } from 'react-router-dom'; // Import useNavigate
+import { useUserContext } from "../contexts/UserContext"; 
+import { useNavigate } from 'react-router-dom'; 
+import { useProducts } from '../contexts/ProductContext';
+import { Product } from '../types'; // Adjust import based on your structure
 
 interface AddToCartSidebarProps {
   isOpen: boolean;
@@ -10,13 +13,36 @@ interface AddToCartSidebarProps {
 
 const AddToCartSidebar: React.FC<AddToCartSidebarProps> = ({ isOpen, onClose }) => {
   const { cartItems, removeFromCart, updateQuantity, totalAmount } = useCart();
-  const navigate = useNavigate(); // Initialize the navigate function
+  const { user } = useUserContext(); 
+  const navigate = useNavigate(); 
+  const [productInfo, setProductInfo] = useState<Product[]>([]); // Adjusted to use Product type
+  const { getProductById } = useProducts(); // Get the getProductById function from context
 
-  // Function to handle checkout
   const handleCheckout = () => {
-    onClose(); // Optionally close the sidebar
-    navigate('/checkout'); // Redirect to the checkout page
+    onClose(); 
+    navigate('/checkout'); 
   };
+
+  const userCartItems = user?.cartItems || [];
+
+  useEffect(() => {
+    const fetchProductInfo = () => {
+      try {
+        const products = userCartItems.map(item => {
+          const product = getProductById(item.product); // Use getProductById from context
+          return product; // Return the found product
+        }).filter(product => product !== undefined) as Product[]; // Filter out any undefined values
+        
+        setProductInfo(products); // Set the fetched products
+      } catch (error) {
+        console.error('Error fetching product information:', error);
+      }
+    };
+
+    if (userCartItems.length > 0) {
+      fetchProductInfo();
+    }
+  }, [getProductById, userCartItems]);
 
   return (
     <>
@@ -40,46 +66,48 @@ const AddToCartSidebar: React.FC<AddToCartSidebarProps> = ({ isOpen, onClose }) 
         </div>
 
         <div className="flex-1 p-4 overflow-y-auto h-[calc(100vh-250px)]">
-          {cartItems.length === 0 ? (
+          {userCartItems.length === 0 ? (
             <p>Your cart is empty</p>
           ) : (
-            cartItems.map((item) => (
-              <div key={item.id} className="flex items-center mb-4">
-                <img
-                  src={item.product.images}
-                  alt={item.product.name}
-                  className="w-16 h-16 object-cover rounded-md"
-                />
-                <div className="ml-4 flex-1">
-                  <p className="font-bold">{item.product.name}</p>
-                  <p className="text-sm">Size: {item.size}</p>
-                  <p className="text-sm">
-                    {item.quantity} x ₹{item.product.price}
-                  </p>
-                  <div className="flex mt-2">
+            productInfo.map((product, index) => (
+              product ? ( // Ensure product is defined
+                <div key={index} className="flex items-center mb-4">
+                  <img
+                    src={product.images[0]} // Adjust as per your images structure
+                    alt={product.name}
+                    className="w-16 h-16 object-cover rounded-md"
+                  />
+                  <div className="ml-4 flex-1">
+                    <p className="font-bold">{product.name}</p>
+                    <p className="text-sm">Size: {userCartItems[index]?.size}</p>
+                    <p className="text-sm">
+                      {userCartItems[index]?.quantity} x ₹{product.price}
+                    </p>
+                    <div className="flex mt-2">
+                      <button
+                        className="px-2 py-1 bg-gray-200 rounded-md"
+                        onClick={() => updateQuantity(product.id, userCartItems[index]?.quantity - 1)}
+                        disabled={userCartItems[index]?.quantity <= 1}
+                      >
+                        -
+                      </button>
+                      <span className="px-4">{userCartItems[index]?.quantity}</span>
+                      <button
+                        className="px-2 py-1 bg-gray-200 rounded-md"
+                        onClick={() => updateQuantity(product.id, userCartItems[index]?.quantity + 1)}
+                      >
+                        +
+                      </button>
+                    </div>
                     <button
-                      className="px-2 py-1 bg-gray-200 rounded-md"
-                      onClick={() => updateQuantity(item.product.id, item.quantity - 1)}
-                      disabled={item.quantity <= 1}
+                      onClick={() => removeFromCart(product.id)}
+                      className="text-red-500 text-sm mt-2 hover:underline"
                     >
-                      -
-                    </button>
-                    <span className="px-4">{item.quantity}</span>
-                    <button
-                      className="px-2 py-1 bg-gray-200 rounded-md"
-                      onClick={() => updateQuantity(item.product.id, item.quantity + 1)}
-                    >
-                      +
+                      Remove
                     </button>
                   </div>
-                  <button
-                    onClick={() => removeFromCart(item.product.id)}
-                    className="text-red-500 text-sm mt-2 hover:underline"
-                  >
-                    Remove
-                  </button>
                 </div>
-              </div>
+              ) : null
             ))
           )}
         </div>
@@ -99,7 +127,7 @@ const AddToCartSidebar: React.FC<AddToCartSidebarProps> = ({ isOpen, onClose }) 
           </div>
 
           <button 
-            onClick={handleCheckout} // Call the checkout handler
+            onClick={handleCheckout} 
             className="mt-4 w-full bg-black text-white py-2 rounded-md hover:bg-gray-700 transition-colors"
           >
             Checkout

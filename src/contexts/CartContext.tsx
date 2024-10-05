@@ -3,9 +3,9 @@ import { Product, CartItem } from "../types"; // Importing types
 
 interface CartContextProps {
   cartItems: CartItem[];
-  addToCart: (product: Product, quantity: number, size: string) => void; // Updated to include size
-  removeFromCart: (productId: number) => void; // Updated to number type
-  updateQuantity: (productId: number, quantity: number) => void; // Updated to number type
+  addToCart: (product: Product, quantity: number, size: string) => void;
+  removeFromCart: (productId: number, size: string) => void; // Accept both productId and size
+  updateQuantity: (productId: number, size: string, quantity: number) => void;
   totalAmount: number;
   totalItems: number;
 }
@@ -14,9 +14,7 @@ interface CartProviderProps {
   children: ReactNode;
 }
 
-export const CartContext = createContext<CartContextProps | undefined>(
-  undefined
-);
+export const CartContext = createContext<CartContextProps | undefined>(undefined);
 
 export const useCart = () => {
   const context = useContext(CartContext);
@@ -30,13 +28,22 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
 
   const addToCart = (product: Product, quantity: number, size: string) => {
-    if (!product.sizes.includes(size)) {
+    // Find the selected size from the product's available sizes
+    const selectedSize = product.sizes.find((s) => s.size === size);
+
+    if (!selectedSize) {
       console.error(`Size ${size} is not available for this product.`);
-      return; // Optionally return to avoid adding an invalid size to the cart
+      return;
+    }
+
+    // Check if requested quantity exceeds available stock for that size
+    if (quantity > selectedSize.quantity) {
+      console.error(`Requested quantity exceeds available stock for size ${size}.`);
+      return;
     }
 
     const existingCartItem = cartItems.find(
-      (item) => item.product.id === product.id && item.size === size // Use item.size instead of item.product.size
+      (item) => item.product.id === product.id && item.size === size
     );
 
     if (existingCartItem) {
@@ -71,26 +78,27 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
     }
   };
 
-  const removeFromCart = (productId: number) => {
-    setCartItems(cartItems.filter((item) => item.product.id !== productId));
+  // Updated the signature of removeFromCart to accept both productId and size
+  const removeFromCart = (productId: number, size: string) => {
+    setCartItems(cartItems.filter((item) => !(item.product.id === productId && item.size === size)));
   };
-
-  const updateQuantity = (productId: number, quantity: number) => {
+  
+  const updateQuantity = (productId: number, size: string, quantity: number) => {
     setCartItems(
       cartItems.map((item) =>
-        item.product.id === productId ? { ...item, quantity } : item
+        item.product.id === productId && item.size === size
+          ? { ...item, quantity: quantity <= 0 ? 1 : quantity } // Prevents quantity from going below 1
+          : item
       )
     );
   };
+  
 
   const totalAmount = cartItems.reduce(
     (total, item) => total + item.product.price * item.quantity,
     0
   );
-  const totalItems = cartItems.reduce(
-    (total, item) => total + item.quantity,
-    0
-  );
+  const totalItems = cartItems.reduce((total, item) => total + item.quantity, 0);
 
   return (
     <CartContext.Provider

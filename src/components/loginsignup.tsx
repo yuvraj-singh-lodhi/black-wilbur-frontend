@@ -1,7 +1,11 @@
 import React, { useState } from "react";
-import { registerUser, loginUser } from '../services/api'; // Import your API functions
+import { useNavigate } from "react-router-dom"; // Import useNavigate
+import { registerUser, loginUser, fetchCurrentUser } from '../services/api'; // Import your API functions
+import { useAuth  } from '../contexts/AuthContext'; // Import UserContext
 
 const LoginSignup: React.FC = () => {
+  // const {user, setUser } = useUserContext(); // Access the setUser function from context
+  const {setUser } = useAuth(); // Access setUser from AuthContext
   const [isLogin, setIsLogin] = useState(true); // Toggle between login and signup
   const [forgotPassword, setForgotPassword] = useState(false);
   const [loading, setLoading] = useState(false); // Loading state
@@ -10,10 +14,10 @@ const LoginSignup: React.FC = () => {
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
-    username: "", // Add username for both login and signup
-    email: "",    // Required only for signup
+    username: "", 
+    email: "",  
     password: "",
-    password2: "", // Add password2 for signup
+    password2: "", 
   });
 
   // State to track errors
@@ -26,9 +30,8 @@ const LoginSignup: React.FC = () => {
     password2: "", // Add password2 for confirmation
   });
 
-  // Separate states for login and forgot password errors
   const [loginErrors] = useState({
-    email: "", // Change from email to username
+    username: "", // Changed from email to username
     password: "",
   });
 
@@ -39,85 +42,95 @@ const LoginSignup: React.FC = () => {
   const [apiError, setApiError] = useState(""); // API error state
   const [successMessage, setSuccessMessage] = useState(""); // Success message state
 
+  // Initialize useNavigate
+  const navigate = useNavigate();
+
   // Handle input changes
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { id, value } = e.target;
     setFormData((prevData) => ({
       ...prevData,
-      [id]: value, // This line is correctly using the id to update the state
+      [id]: value,
     }));
   };
-  
 
   // Handle form submission for signup
   const handleSignupSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setApiError("");
     setSuccessMessage("");
-  
+
     // Perform basic validation for required fields
     const newErrors = {
       firstName: formData.firstName ? "" : "First Name is required",
       lastName: formData.lastName ? "" : "Last Name is required",
       email: formData.email ? "" : "Email is required",
-      username: formData.username ? "" : "Username is required", // Include username validation
+      username: formData.username ? "" : "Username is required",
       password: formData.password ? "" : "Password is required",
       password2: formData.password2 ? "" : "Please confirm your password",
     };
-  
+
     setErrors(newErrors);
-  
+
     // Check if there are no errors before proceeding
     if (!Object.values(newErrors).some((error) => error)) {
-      setLoading(true); // Start loading spinner or disable button
+      setLoading(true);
       try {
-        // Register the user by passing the correct data
         const response = await registerUser({
-          username: formData.username,   // Include username
+          username: formData.username,
           password: formData.password,
-          password2: formData.password2, // Send password confirmation
+          password2: formData.password2,
           email: formData.email,
           first_name: formData.firstName,
           last_name: formData.lastName,
         });
-        
-        // Handle success response
+
         console.log("Signup successful:", response);
         setSuccessMessage("Account created successfully! Please log in.");
-        setFormData({ firstName: "", lastName: "", email: "", username: "", password: "", password2: "" }); // Reset form
-        setIsLogin(true); // Switch to login page or form
+        setFormData({ firstName: "", lastName: "", email: "", username: "", password: "", password2: "" });
+        setIsLogin(true);
       } catch (error) {
         console.error("Signup error:", error);
         setApiError("Failed to create account. Please try again.");
       } finally {
-        setLoading(false); // Stop loading spinner or enable button
+        setLoading(false);
       }
     }
   };
-  
 
-// Handle form submission for login
-// Handle form submission for login
-const handleLoginSubmit = async (e: React.FormEvent) => {
-  e.preventDefault();
-  setApiError("");
+  // Handle form submission for login
+  const handleLoginSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setApiError("");
 
-  // Use identifier instead of email
-  const credentials = {
-    identifier: formData.email, // Change to identifier here
-    password: formData.password,
+    const credentials = {
+      identifier: formData.username, // Use username instead of email
+      password: formData.password,
+    };
+
+    try {
+      const response = await loginUser(credentials);
+      console.log("Login successful:", response);
+      
+      // Check if login was successful
+      if (response && response.token) {
+        // Fetch user details after successful login
+        const userDetails = await fetchCurrentUser(); // Pass token if needed
+        console.log("Fetched user details:", userDetails);
+        
+        // Set user context
+        setUser(userDetails);
+        // Store token in local storage
+        localStorage.setItem("token", response.token);
+
+        // Navigate to UserProfile after successful login
+        navigate('/UserProfile'); // Change this to your actual route for UserProfile
+      }
+    } catch (error) {
+      console.error("Login error:", error);
+      setApiError("Invalid credentials. Please check your username and password.");
+    }
   };
-
-  try {
-    const response = await loginUser(credentials);
-    console.log("Login successful:", response);
-    // Handle successful login (e.g., redirect or update state)
-  } catch (error) {
-    console.error("Login error:", error);
-    setApiError("Invalid credentials. Please check your email and password.");
-  }
-};
-
 
   // Handle forgot password submission
   const handleForgotPasswordSubmit = (e: React.FormEvent) => {
@@ -134,7 +147,6 @@ const handleLoginSubmit = async (e: React.FormEvent) => {
       // Implement forgot password logic here
     }
   };
-
   return (
     <div className="flex flex-col md:flex-row h-screen bg-white font-montserrat">
       {/* Left Section */}
@@ -187,16 +199,16 @@ const handleLoginSubmit = async (e: React.FormEvent) => {
               <form onSubmit={handleLoginSubmit} className="space-y-6 mt-16 md:mt-0">
                 <div className="mb-6">
                   <input
-                    type="email"
-                    id="email"
-                    value={formData.email}
+                    type="text"
+                    id="username"
+                    value={formData.username}
                     onChange={handleInputChange}
-                    className={`block w-full h-12 p-4 border ${loginErrors.email ? "border-red-500" : "border-black"} text-black placeholder-gray-500 focus:outline-none focus:border-black text-sm`}
-                    placeholder="Email"
+                    className={`block w-full h-12 p-4 border ${loginErrors.username ? "border-red-500" : "border-black"} text-black placeholder-gray-500 focus:outline-none focus:border-black text-sm`}
+                    placeholder="Username"
                     required
                   />
-                  {loginErrors.email && (
-                    <p className="text-red-500 text-sm">{loginErrors.email}</p>
+                  {loginErrors.username && (
+                    <p className="text-red-500 text-sm">{loginErrors.username}</p>
                   )}
                 </div>
                 <div className="mb-6">
@@ -219,7 +231,7 @@ const handleLoginSubmit = async (e: React.FormEvent) => {
                     className="w-44 bg-black text-white py-2 px-4 rounded-3xl hover:bg-gray-800"
                     disabled={loading}
                   >
-                    {loading ? "Logging in..." : "Login"}
+                    {loading ? "Logging in..." : "Log In"}
                   </button>
                   <button
                     type="button"
@@ -233,6 +245,7 @@ const handleLoginSubmit = async (e: React.FormEvent) => {
             )
           ) : (
             <form onSubmit={handleSignupSubmit} className="space-y-6 mt-16 md:mt-0">
+              {/* Signup form fields */}
               <div className="mb-6">
                 <input
                   type="text"
@@ -243,9 +256,7 @@ const handleLoginSubmit = async (e: React.FormEvent) => {
                   placeholder="First Name"
                   required
                 />
-                {errors.firstName && (
-                  <p className="text-red-500 text-sm">{errors.firstName}</p>
-                )}
+                {errors.firstName && <p className="text-red-500 text-sm">{errors.firstName}</p>}
               </div>
               <div className="mb-6">
                 <input
@@ -257,9 +268,7 @@ const handleLoginSubmit = async (e: React.FormEvent) => {
                   placeholder="Last Name"
                   required
                 />
-                {errors.lastName && (
-                  <p className="text-red-500 text-sm">{errors.lastName}</p>
-                )}
+                {errors.lastName && <p className="text-red-500 text-sm">{errors.lastName}</p>}
               </div>
               <div className="mb-6">
                 <input
@@ -271,9 +280,7 @@ const handleLoginSubmit = async (e: React.FormEvent) => {
                   placeholder="Email"
                   required
                 />
-                {errors.email && (
-                  <p className="text-red-500 text-sm">{errors.email}</p>
-                )}
+                {errors.email && <p className="text-red-500 text-sm">{errors.email}</p>}
               </div>
               <div className="mb-6">
                 <input
@@ -285,9 +292,7 @@ const handleLoginSubmit = async (e: React.FormEvent) => {
                   placeholder="Username"
                   required
                 />
-                {errors.username && (
-                  <p className="text-red-500 text-sm">{errors.username}</p>
-                )}
+                {errors.username && <p className="text-red-500 text-sm">{errors.username}</p>}
               </div>
               <div className="mb-6">
                 <input
@@ -299,9 +304,7 @@ const handleLoginSubmit = async (e: React.FormEvent) => {
                   placeholder="Password"
                   required
                 />
-                {errors.password && (
-                  <p className="text-red-500 text-sm">{errors.password}</p>
-                )}
+                {errors.password && <p className="text-red-500 text-sm">{errors.password}</p>}
               </div>
               <div className="mb-6">
                 <input
@@ -313,9 +316,7 @@ const handleLoginSubmit = async (e: React.FormEvent) => {
                   placeholder="Confirm Password"
                   required
                 />
-                {errors.password2 && (
-                  <p className="text-red-500 text-sm">{errors.password2}</p>
-                )}
+                {errors.password2 && <p className="text-red-500 text-sm">{errors.password2}</p>}
               </div>
               <div className="flex flex-col items-center space-y-4">
                 <button
@@ -323,22 +324,18 @@ const handleLoginSubmit = async (e: React.FormEvent) => {
                   className="w-44 bg-black text-white py-2 px-4 rounded-3xl hover:bg-gray-800"
                   disabled={loading}
                 >
-                  {loading ? "Signing up..." : "Sign Up"}
+                  {loading ? "Creating account..." : "Create Account"}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setIsLogin(true)}
+                  className="text-black hover:underline"
+                >
+                  Already have an account? Log in
                 </button>
               </div>
             </form>
           )}
-
-          {/* Toggle between Login and Signup */}
-          <div className="flex justify-center mt-4">
-            <button
-              type="button"
-              onClick={() => setIsLogin(!isLogin)} // Toggle login/signup mode
-              className="text-black hover:underline"
-            >
-              {isLogin ? "Don't have an account? Sign Up" : "Already have an account? Log In"}
-            </button>
-          </div>
         </div>
       </div>
     </div>
