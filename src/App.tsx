@@ -12,50 +12,70 @@ import AdminPanel from "./admin/adminpanel";
 import AdminLogin from "./admin/adminlogin";
 import UserProfile from "./components/userprofile";
 import ViewAddresses from "./components/viewaddresses";
-import { AuthProvider } from './contexts/AuthContext';
-import { ProductProvider } from './contexts/ProductContext';
-import { CartProvider } from './contexts/CartContext';
-import { OrderProvider } from './contexts/OrderContext';
-import { CheckoutProvider } from './contexts/CheckoutContext';
-import { UIProvider } from './contexts/UIContext';
-import { SingleProductProvider } from './contexts/SingleProductContext';
-import { CategoryProvider } from './contexts/CategoryContext'; 
-
+import { AuthProvider } from "./contexts/AuthContext";
+import { ProductProvider } from "./contexts/ProductContext";
+import { CartProvider } from "./contexts/CartContext";
+import { OrderProvider } from "./contexts/OrderContext";
+import { CheckoutProvider } from "./contexts/CheckoutContext";
+import { UIProvider } from "./contexts/UIContext";
+import { SingleProductProvider } from "./contexts/SingleProductContext";
+import { CategoryProvider } from "./contexts/CategoryContext";
+import { UserProvider } from "./contexts/UserContext"; // Adjust path as necessary
+import ErrorBoundary from "./contexts/ErrorBoundary";
 function App() {
   return (
-    <AuthProvider>
-      <ProductProvider>
+    <ErrorBoundary>
+      <AuthProvider>
         <CartProvider>
-          <OrderProvider>
-            <CheckoutProvider>
-              <UIProvider>
-                <SingleProductProvider>
-                  <CategoryProvider> 
-                    <Router>
-                      <ScrollToTop />
-                      <Navbar />
-                      <Routes>
-                        <Route path="/" element={<Home />} />
-                        <Route path="/collection" element={<Collection />} />
-                        <Route path="/Login" element={<LoginSignup />} />
-                        <Route path="/Product/:id" element={<Product />} />
-                        <Route path="/AboutUs" element={<AboutUs />} />
-                        <Route path="/Checkout" element={<Checkout />} />
-                        <Route path="/AdminPanel" element={<AdminPanel />} />
-                        <Route path="/admin-login" element={<AdminLogin />} />
-                        <Route path="/UserProfile" element={<UserProfile />} />
-                        <Route path="/ViewAddresses" element={<ViewAddresses />} />
-                      </Routes>
-                      <Footer />
-                    </Router>
-                  </CategoryProvider>
-                </SingleProductProvider>
-              </UIProvider>
-            </CheckoutProvider>
-          </OrderProvider>
+          <UserProvider>
+            <ProductProvider>
+              <OrderProvider>
+                <CheckoutProvider>
+                  <UIProvider>
+                    <SingleProductProvider>
+                      <CategoryProvider>
+                        <Router>
+                          <ScrollToTop />
+                          <Navbar />
+                          <Routes>
+                            <Route path="/" element={<Home />} />
+                            <Route
+                              path="/collection"
+                              element={<Collection />}
+                            />
+                            <Route path="/Login" element={<LoginSignup />} />
+                            <Route path="/Product/:id" element={<Product />} />
+                            <Route path="/AboutUs" element={<AboutUs />} />
+                            <Route path="/Checkout" element={<Checkout />} />
+                            <Route
+                              path="/AdminPanel"
+                              element={<AdminPanel />}
+                            />
+                            <Route
+                              path="/admin-login"
+                              element={<AdminLogin />}
+                            />
+                            <Route
+                              path="/UserProfile"
+                              element={<UserProfile />}
+                            />
+                            <Route
+                              path="/ViewAddresses"
+                              element={<ViewAddresses />}
+                            />
+                          </Routes>
+                          <Footer />
+                        </Router>
+                      </CategoryProvider>
+                    </SingleProductProvider>
+                  </UIProvider>
+                </CheckoutProvider>
+              </OrderProvider>
+            </ProductProvider>
+          </UserProvider>
         </CartProvider>
-      </ProductProvider>
-    </AuthProvider>
+      </AuthProvider>
+    </ErrorBoundary>
   );
 }
 

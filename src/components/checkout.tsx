@@ -1,10 +1,12 @@
-import React from 'react';
-import { useForm } from 'react-hook-form';
-import { useNavigate } from 'react-router-dom';
-import { useCart } from "../contexts/CartContext"; // Import CartContext
-import { useSingleProduct } from "../contexts/SingleProductContext"; // Import SingleProductContext
+import React, { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
+import { useCart } from "../contexts/CartContext";
+import { useSingleProduct } from "../contexts/SingleProductContext";
+import { createShippingAddresses, fetchShippingAddresses } from "../services/api";
+import { useUserContext } from "../contexts/UserContext";
+import { ShippingAddress } from "../types";
 
-// Define FormValues type
 interface FormValues {
   firstName: string;
   lastName: string;
@@ -22,18 +24,75 @@ interface FormValues {
 }
 
 const Checkout: React.FC = () => {
-  const { register, handleSubmit, formState: { errors } } = useForm<FormValues>();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    setValue, 
+  } = useForm<FormValues>();
   const navigate = useNavigate();
-  const { cartItems } = useCart(); // Access cart items
-  const { singleProduct } = useSingleProduct(); // Access single product context
+  const { cartItems } = useCart();
+  const { singleProduct } = useSingleProduct();
+  const { user } = useUserContext();
+  const [existingAddress, setExistingAddress] = useState<ShippingAddress | null>(null);
 
-  const onSubmit = (data: FormValues) => {
+  useEffect(() => {
+    const fetchAddress = async () => {
+      console.log(user)
+      if (!user) return;
+
+      try {
+        const addresses = await fetchShippingAddresses();
+        console.log(addresses);
+        const userAddress = addresses.find(address => address.user.id === user.id);
+        console.log(userAddress)
+        if (userAddress) {
+          setExistingAddress(userAddress);
+          setValue("address", userAddress.address_line_1);
+          setValue("apartment", userAddress.address_line_2 || ''); 
+          setValue("city", userAddress.city);
+          setValue("state", userAddress.state);
+          setValue("pinCode", userAddress.zip_code);
+          setValue("phone", user.phone); // Assuming user.phone is available
+        }
+      } catch (error) {
+        console.error("Failed to fetch shipping addresses:", error);
+      }
+    };
+
+    fetchAddress();
+  }, [user, setValue]);
+
+  const onSubmit = async (data: FormValues) => {
     console.log("Submitted data:", data);
-    navigate('/payment');
+
+    if (!user) {
+      console.error("User not authenticated");
+      return;
+    }
+
+    // Create the shipping address using the form data
+    try {
+      const newShippingAddress = await createShippingAddresses({
+        user: user.id,
+        address_line_1: data.address,
+        address_line_2: data.apartment || '',
+        city: data.city,
+        state: data.state,
+        zip_code: data.pinCode,
+        country: "India" // Assuming country is India for this case
+      });
+      console.log("Shipping address created:", newShippingAddress);
+      navigate("/payment");
+    } catch (error) {
+      console.error("Failed to create shipping address:", error);
+    }
   };
 
-  // Calculate the subtotal from cart items
-  const subtotal = cartItems.reduce((acc, item) => acc + item.quantity * item.product.price, 0);
+  const subtotal = cartItems.reduce(
+    (acc, item) => acc + item.quantity * item.product.price,
+    0
+  );
 
   return (
     <div className="bg-black text-white min-h-screen flex flex-col font-montserrat">
@@ -170,35 +229,42 @@ const Checkout: React.FC = () => {
               </div>
             </form>
           </div>
-          
           {/* Right side - Order Summary */}
           <div className="w-full lg:w-1/2 lg:pl-8 mt-6 lg:mt-0">
             <h3 className="text-xl font-bold mb-4">Order Summary</h3>
             <div className="bg-gray-100 p-4 rounded-lg">
               {singleProduct ? (
                 <div className="flex items-center mb-4">
-                  <img src={singleProduct.images} alt={singleProduct.name} className="w-24 h-24 object-cover rounded-md" />
+                  <img
+                    src={singleProduct.images}
+                    alt={singleProduct.name}
+                    className="w-24 h-24 object-cover rounded-md"
+                  />
                   <div className="ml-4">
                     <p className="font-bold">{singleProduct.name}</p>
                     <p className="text-sm">Size: {singleProduct.size}</p>
-                    <p className="text-sm">1 x ₹{singleProduct.price.toLocaleString('en-IN')}</p>
+                    <p className="text-sm">1 x ₹{singleProduct.price.toLocaleString("en-IN")}</p>
                   </div>
                 </div>
               ) : (
                 cartItems.map((item) => (
                   <div key={item.product.id} className="flex items-center mb-4">
-                    <img src={`/api/placeholder/400/320`} alt={item.product.name} className="w-24 h-24 object-cover rounded-md" />
+                    <img
+                      src={`/api/placeholder/400/320`}
+                      alt={item.product.name}
+                      className="w-24 h-24 object-cover rounded-md"
+                    />
                     <div className="ml-4">
                       <p className="font-bold">{item.product.name}</p>
                       <p className="text-sm">Size: {item.size}</p>
-                      <p className="text-sm">{item.quantity} x ₹{item.product.price.toLocaleString('en-IN')}</p>
+                      <p className="text-sm">{item.quantity} x ₹{item.product.price.toLocaleString("en-IN")}</p>
                     </div>
                   </div>
                 ))
               )}
               <div className="flex justify-between mb-4">
-                <span>Subtotal ({singleProduct ? 1 : cartItems.length} item{cartItems.length > 1 ? 's' : ''})</span>
-                <span>₹{singleProduct ? singleProduct.price.toLocaleString('en-IN') : subtotal.toLocaleString('en-IN')}</span>
+                <span>Subtotal ({singleProduct ? 1 : cartItems.length} item{cartItems.length > 1 ? "s" : ""})</span>
+                <span>₹{singleProduct ? singleProduct.price.toLocaleString("en-IN") : subtotal.toLocaleString("en-IN")}</span>
               </div>
               <div className="flex justify-between mb-4">
                 <span>Shipping</span>
@@ -206,7 +272,7 @@ const Checkout: React.FC = () => {
               </div>
               <div className="flex justify-between font-bold">
                 <span>Total</span>
-                <span>₹{singleProduct ? singleProduct.price.toLocaleString('en-IN') : subtotal.toLocaleString('en-IN')}</span>
+                <span>₹{singleProduct ? singleProduct.price.toLocaleString("en-IN") : subtotal.toLocaleString("en-IN")}</span>
               </div>
             </div>
           </div>

@@ -141,9 +141,7 @@ const Home: React.FC = () => {
             >
               {products.map((product) => {
                 const productImage =
-                  product.images.length > 0 ? product.images[0] : null; // Get the first image
-                console.log(productImage);
-
+                  product.images.length > 0 ? product.images[0] : null; 
                 return (
                   <div
                     key={product.id}

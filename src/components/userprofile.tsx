@@ -1,59 +1,63 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-
-// Define types for the data structures
-interface Order {
-  id: number;
-  productName: string;
-  price: number;
-  status: string;
-}
-
-interface AccountDetails {
-  customerName: string;
-  country: string;
-  addresses: string[];
-}
-
-// Mock API to simulate data fetching
-const fetchOrders = async (): Promise<Order[]> => {
-  return [
-    { id: 1, productName: "Black T-shirt", price: 30, status: "Delivered" },
-    { id: 2, productName: "White T-shirt", price: 25, status: "Processing" },
-  ];
-};
-
-const fetchAccountDetails = async (): Promise<AccountDetails> => {
-  return {
-    customerName: "Customer 1",
-    country: "India",
-    addresses: ["123 Street Name, City, India"],
-  };
-};
+import { useUserContext } from "../contexts/UserContext"; // Adjust the import according to your file structure
+import { Order, AccountDetails, CurrentUserDetails } from "../types"; // Adjust the import based on your project structure
+import { fetchUserDetails, logoutUser } from "../services/api"; // Importing from api.tsx
+import { useAuth  } from '../contexts/AuthContext'; // Import UserContext
 
 const MyAccount: React.FC = () => {
+  const { user, setUser } = useUserContext(); // Access user from context
+  const {userauth } = useAuth();
   const [orders, setOrders] = useState<Order[]>([]);
-  const [accountDetails, setAccountDetails] = useState<AccountDetails | null>(
-    null
-  );
+  const [accountDetails, setAccountDetails] = useState<AccountDetails | null>(null);
+  const [currentUserDetails, setCurrentUserDetails] = useState<CurrentUserDetails | null>(null);
+  const [error, setError] = useState<string | null>(null); // Error state
   const navigate = useNavigate();
 
-  // Fetch data from mock API on component mount
+  // Fetch data from API on component mount
   useEffect(() => {
-    const fetchData = async () => {
-      const ordersData = await fetchOrders();
-      const accountData = await fetchAccountDetails();
-      setOrders(ordersData);
-      setAccountDetails(accountData);
-    };
-
-    fetchData();
-  }, []);
-
+    if (userauth && userauth.id) {
+      console.log(userauth)
+      const fetchData = async () => {
+        try {
+          // Fetch user details using optional chaining to avoid crashes
+          const currentUserDetails = await fetchUserDetails(userauth.id);
+  
+          console.log("Fetched currentUserDetails:", currentUserDetails); // Check the fetched data
+  
+          // Set the current user details
+          setCurrentUserDetails(currentUserDetails);
+  
+          // Set orders or default to an empty array if no orders are available
+          setOrders(currentUserDetails?.orders || []);
+  
+          // Set account details if the user object is available
+          setAccountDetails({
+            customerName: currentUserDetails?.user?.first_name || "",
+            email: currentUserDetails?.user?.email || "",
+            addresses: currentUserDetails?.addresses ? [currentUserDetails.addresses[0]] : [], // Ensure it's an array
+            country: currentUserDetails?.addresses?.[0]?.country || "", // Set country if address is available
+          });
+          
+  
+        } catch (err) {
+          console.error("Error fetching user details:", err);
+          setError("An error occurred while fetching data.");
+        }
+      };
+  
+      fetchData();
+    } else {
+      console.warn("User or user data is undefined");
+    }
+  }, [userauth]);
+  
+  // Handle logout
   const handleLogout = () => {
-    // Implement your logout logic here
-    console.log("Logging out...");
-    navigate("/login"); // Redirect user to login page after logout
+    logoutUser()
+    // localStorage.removeItem("token");
+    setUser(null);
+    navigate("/login"); // Change to your actual login/signup route
   };
 
   return (
@@ -69,6 +73,8 @@ const MyAccount: React.FC = () => {
           </button>
         </div>
 
+        {error && <p className="text-red-500">{error}</p>} {/* Display error if any */}
+
         <div className="grid grid-cols-2 gap-8 mt-8">
           {/* Left side - Orders */}
           <div>
@@ -76,10 +82,20 @@ const MyAccount: React.FC = () => {
             {orders.length > 0 ? (
               <ul>
                 {orders.map((order) => (
-                  <li key={order.id} className="mb-4">
-                    <div className="font-bold">{order.productName}</div>
-                    <div>Price: ${order.price}</div>
+                  <li key={order.id} className="mb-4 border p-4 rounded">
+                    <div className="font-bold">Order ID: {order.id}</div>
                     <div>Status: {order.status}</div>
+                    <div>Created At: {new Date(order.created_at).toLocaleDateString()}</div>
+                    <div>
+                      <h3 className="font-semibold">Items:</h3>
+                      <ul>
+                        {order.items.map((item) => (
+                          <li key={item.id}>
+                            Product ID: {item.product_id}, Quantity: {item.quantity}, Size: {item.size}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
                   </li>
                 ))}
               </ul>
@@ -93,20 +109,24 @@ const MyAccount: React.FC = () => {
             <h2 className="text-2xl font-semibold mb-4">Account Details</h2>
             {accountDetails ? (
               <>
-                <p>{accountDetails.customerName}</p>
-                <p>{accountDetails.country}</p>
+                <p>Name: {accountDetails.customerName}</p>
+                <p>Country: {accountDetails.country}</p>
                 <a
                   onClick={() => navigate("/ViewAddresses")} // Ensure routing is set up
                   className="text-blue-500 hover:underline mt-2 inline-block"
                 >
-                  View Addresses ({accountDetails.addresses.length})
+                  View Addresses ({accountDetails.addresses.length || 0})
                 </a>
                 <ul className="mt-2">
-                  {accountDetails.addresses.map((address, index) => (
-                    <li key={index} className="text-gray-700">
-                      {address}
-                    </li>
-                  ))}
+                  {Array.isArray(accountDetails.addresses) && accountDetails.addresses.length > 0 ? (
+                    accountDetails.addresses.map((address, index) => (
+                      <li key={index} className="text-gray-700">
+                        {address.address_line_1}, {address.city}, {address.state}, {address.zip_code}
+                      </li>
+                    ))
+                  ) : ( 
+                    <p>No addresses found.</p>
+                  )}
                 </ul>
               </>
             ) : (

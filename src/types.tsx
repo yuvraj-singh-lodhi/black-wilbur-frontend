@@ -1,4 +1,30 @@
-// types.tsx
+// // types.tsx
+export interface CurrentUserDetails {
+  user: UserData;
+  cart: Cart[];
+  cartItems:CartItem[], // Array of Cart items associated with the user
+  wishlist: Wishlist; // Wishlist associated with the user
+  orders: Order[];
+  orderItems:OrderItem[], // Array of user's orders
+  addresses: ShippingAddress[]; // Array of user's shipping addresses
+  loyaltyPoints?: LoyaltyPoint; // Optional loyalty points
+}
+
+export interface UserData {
+  id: number;
+  password: string;
+  last_login: string | null; // Use null for users who haven't logged in yet
+  is_superuser: boolean;
+  username: string;
+  first_name: string;
+  last_name: string;
+  is_staff: boolean;
+  is_active: boolean;
+  date_joined: string; // Consider using Date type in your application logic if needed
+  email: string;
+  groups: Array<unknown>; // Specify a more detailed type if you have a structure for groups
+  user_permissions: Array<unknown>; // Specify a more detailed type if you have a structure for user permissions
+}
 
 export interface Category {
   id: string;
@@ -15,6 +41,13 @@ export interface ProductImage {
   created_at: string;
 }
 
+export interface ProductSize {
+  id: number; // Unique identifier for the size entry
+  product: Product; // Reference to the product
+  size: string; // Size (e.g., S, M, L, XL, XXL)
+  quantity: number; // Quantity available for this size
+}
+
 export interface Product {
   id: number;
   name: string;
@@ -23,10 +56,10 @@ export interface Product {
   stock: number;
   category: Category;
   images: ProductImage[]; // Add support for multiple images
-  sizes: string[]; // Add this field for sizes
+  sizes: ProductSize[]; // Array of sizes with quantities
   created_at: string;
   updated_at: string;
-  availability:boolean
+  availability: boolean; // Added availability field
 }
 
 // export interface UserDB {
@@ -36,12 +69,15 @@ export interface Product {
 //   name: string;
 //   token: string;
 // }
-export interface User {
-  username: string;
-  password: string;
-  password2?: string; // Optional for login scenarios (used only in registration for confirmation)
-}
 
+export interface User {
+  phone: string;
+  id: number,
+  username: string;
+  email:string,
+  password: string;
+  password2?: string; 
+}
 
 export interface Order {
   id: number;
@@ -57,6 +93,15 @@ export interface OrderItem {
   product: Product;
   quantity: number;
 }
+export interface AccountDetails {
+  customerName: string;  // Name of the customer
+  country: string;       // Country of the customer
+  addresses: ShippingAddress[];   // List of addresses associated with the customer
+  email: string;         // Email of the customer (optional)
+  phoneNumber?: string;  // Phone number of the customer (optional)
+  // You can add more fields if your API returns additional account details
+}
+
 
 export interface Cart {
   id: number;
@@ -69,7 +114,7 @@ export interface CartItem {
   cart: Cart;
   product: Product;
   quantity: number;
-  size: string;
+  size: string; // Size selected for the cart item
 }
 
 export interface Wishlist {
@@ -86,6 +131,18 @@ export interface Review {
   comment: string;
   created_at: string;
 }
+
+export interface Address {
+  id: number;
+  address_line_1: string;
+  address_line_2: string | null;
+  city: string;
+  state: string;
+  zip_code: string;
+  country: string;
+  user: number;
+}
+
 
 export interface ShippingAddress {
   id: number;
